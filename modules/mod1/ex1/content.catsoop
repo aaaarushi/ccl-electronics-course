@@ -26,8 +26,8 @@ Welcome to your first exercise in CCL's Introduction to Electronics course!
 If you haven't already, make sure you read through the <a href="../../">course home page</a> 
 to understand how the course is set up, and to see the exciting things you will get to build.
 
-By the end of this exercise, you will build your first circuit where a DIP switch controls 4 LEDs, and each switch 
-will turn one LED on or off. If you don't know what these words mean, don't worry, you'll learn!
+By the end of this exercise, you will build your first circuit where a DIP switch controls a seven-segment LED, and each switch 
+will turn one segment on or off. If you don't know what these words mean, don't worry, you'll learn!
 
 <div style="text-align: center;">
   <h3>INSERT VIDEO OF SOMEONE MESSING WITH DIP SWITCH AND LIGHTS HERE</h3>
@@ -68,8 +68,11 @@ The 5V label describes the **voltage** of the circuit, which is the “push” t
 </figure>
 
 This is an adapter, allowing us to connect our power source to our breadboard. The adapter splits the power supply into a red and black wire.
-We call the side of the power supply with voltage **positive** and use red wires wires to identify it, while ground is called **GND** or **negative** and denoted with black wires. 
-These red and black wires correspond to the red and blue rails on our breadboard.
+We call the side of the power supply with voltage the **positive terminal** and use red wires wires to identify it, while ground is called **GND** or the **negative terminal** and is denoted with black wires. 
+
+With general convention, the red rail of the breadbaord is used for the positive terminal of the power supply, 
+and the blue rail is used for ground. Both rails of the breadboard are identical in hardware, but this convention ensures that as you work, 
+you do not accidentally mistake the positive terminal for ground.
 
 Current will only flow if the circuit is a complete loop, meaning there is a path directly from the positive (red) side of the power supply, through components, and back to the negative (black) side.
 If the loop is broken and there is an **open circuit**, electricity cannot flow.
@@ -122,7 +125,7 @@ By placing each end of a jumper wire into a hole, you connect those two rows so 
 ### DIP Switch
 
 <figure class="figure">
-  <img src="CURRENT/dip.jpg">
+  <img src="CURRENT/dip.webp">
 </figure>
 
 This is a DIP switch, which is a small set of on-off switches packaged together in one component.
@@ -201,12 +204,8 @@ csq_explanation = "A short circuit allows large amounts of current to flow, whic
 
 Time to make your first circuit! To start us off, lets ensure that our breadboard will have access to power.
 
-With general convention, the red rail of the breadbaord is used for the positive terminal of the power supply, 
-and the blue rail is used for ground. Both rails of the breadboard are identical in hardware, but this convention ensures that as you work, 
-you do not accidentally mistake the positive terminal for ground.
-
 1. Connect the adapter to the power supply.
-2. With your power source OFF, Connect the red wire of the adapter to the red breadboard rail, and the black wire to the blue breadboard rail.
+2. With your power source OFF, connect the red wire of the adapter to the red breadboard rail, and the black wire to the blue breadboard rail.
 
 **Remember, connecting the positive rail and the GND rail directly to eachother could cause safety hazards and damage your components.**
 
@@ -229,6 +228,10 @@ csq_soln = 2
 <div style="text-align: center;">
   <h3>INSERT PHOTO OF LED ON IN CIRCUIT</h3>
 </div>
+
+
+<catsoop-section>Control 8 LEDs</catsoop-section>
+
 
 
 

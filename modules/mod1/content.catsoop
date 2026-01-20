@@ -3,7 +3,7 @@ LEDs, then understand how binary counting works and how tiny chips called ICs ca
 We'll walk you through how to read datasheets to properly connect components on breadboards and wire up
 number displays. By the end, you'll have a working 2-digit counter (00-99) that increments.
 
-<a href="COURSE/modules/mod1/ex1">Exercise 1: LEDs</a>
+<a href="COURSE/modules/mod1/ex1">Exercise 1: LEDs and Basic Circuits</a>
 
 <a href="COURSE/modules/mod1/ex2">Exercise 2: Binary to Decimal</a>
 
