@@ -1,1 +1,1 @@
-cs_long_name = "Exercise 1.1: LEDs"
+cs_long_name = "Exercise 1.1: LEDs and Basic Circuits"
