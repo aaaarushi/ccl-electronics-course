@@ -1,0 +1,53 @@
+Need more practice or a different explanation? These resources provide deeper coverage of core topics.
+
+## Binary and Number Systems
+
+### Converting Between Binary and Decimal
+
+### Hexadecimal
+
+### Binary Arithmetic
+
+## Circuit Fundamentals
+
+### Ohm's Law (V = IR)
+
+### Series vs Parallel
+
+### Reading Schematics
+
+### Drawing Circuit Diagrams
+
+## Boolean Logic and Truth Tables
+
+### Basic Gates
+
+### Truth Tables
+
+### Boolean Algebra
+
+## Using a Multimeter
+
+## Reading Datasheets
+
+## Additional Learning Resources
+
+### Online Simulators
+- [Falstad Circuit Simulator]: Test circuits virtually
+- [LogicLy]: Digital logic simulator
+- [CircuitJS]: Browser-based simulator
+
+### Reference Websites
+- [All About Circuits]: Comprehensive electronics textbook
+- [Electronics Tutorials]: Topic-by-topic guides
+- [SparkFun Tutorials]: Beginner-friendly explanations
+
+### Video Channels
+- Ben Eater (digital electronics, breadboard computers)
+- GreatScott! (projects and tutorials)
+- EEVblog (general electronics)
+
+### Books
+- "Make: Electronics" by Charles Platt
+- "The Art of Electronics" by Horowitz & Hill (advanced)
+- "Digital Design" by Morris Mano

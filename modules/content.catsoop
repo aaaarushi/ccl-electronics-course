@@ -1,0 +1,76 @@
+<catsoop-section><a href="COURSE/modules/mod1"> Circuit Basics and Counting </a></catsoop-section>
+
+**Goal**: Build a multi-digit counter (00-99) using CD4026 ICs, 7-segment displays, and push-button inputs.
+
+1. <a href="COURSE/modules/mod1/ex1">Exercise 1.1: LEDs and Basic Circuits</a>
+2. <a href="COURSE/modules/mod1/ex2">Exercise 1.2: Binary to Decimal</a>
+3. <a href="COURSE/modules/mod1/ex3">Exercise 1.3: Counters and Displays</a>
+4. <a href="COURSE/modules/mod1/project">Project 1: Cascading Decade Counter</a>
+
+
+<catsoop-section><a href="COURSE/modules/mod2"> Timing and Resets </a></catsoop-section>
+
+**Goal**: Build a 4-digit digital clock (HH:MM format) using CD4026 counters, 555 timer for 1Hz clock signal, and reset logic to handle 24-hour time. Add buttons to set hours and minutes.
+
+1. <a href="COURSE/modules/mod2/ex1">Exercise 2.1: Debouncing</a>
+2. <a href="COURSE/modules/mod2/ex2">Exercise 2.2: Timing Circuits</a>
+3. <a href="COURSE/modules/mod2/ex3">Exercise 2.3: Reset Logic</a>
+4. <a href="COURSE/modules/mod2/project">Project 2: Cascading Decade Counter</a>
+
+<catsoop-section> Binary Counters and Registers </catsoop-section>
+
+**Goal**: Build a digital clock using only D flip-flops (74LS107N) and logic gates - no pre-made counter ICs allowed. Decode the binary output to 7-segment displays using a 7446 decoder.
+
+1. Exercise 3.1: Binary Counters
+2. Exercise 3.2: Flip-Flops
+3. Exercise 3.3: Register Files
+4. Project 3: Flip-Flop Clock
+
+<catsoop-section> Decoders and Combinational Logic </catsoop-section>
+
+**Goal**: Build a decoder that drives multiple 7-segment displays using an EEPROM as a lookup table and multiplexing to reduce wiring complexity.
+
+1. Exercise 4.1: Logic Gates
+2. Exercise 4.2: EEPROM Lookup Tables
+3. Exercise 4.3: Multiplexing
+4. Project 4: Custom Display System
+
+<catsoop-section> Arithmetic Circuits </catsoop-section>
+
+**Goal**: Build a simple calculator using 74283 adder ICs that can add two 4-bit numbers and display the result on 7-segment displays with an accumulator register.
+
+1. Exercise 5.1: Binary Arithmetic
+2. Exercise 5.2: Adders
+3. Exercise 5.3: ALU Basics
+4. Project 5: 4-bit Calculator
+
+<catsoop-section> Advanced Arithmetic </catsoop-section>
+
+**Goal**: Enhance your calculator to handle signed numbers (positive and negative), display the sign, and detect overflow conditions.
+
+1. Exercise 6.1: Accumulator Design
+2. Exercise 6.2: Signed Arithmetic
+3. Exercise 6.3: BCD Arithmetic
+4. Project 6: Signed Calculator
+
+<catsoop-section> Memory Systems </catsoop-section>
+
+**Goal**: Build a system that stores custom patterns in EEPROM and displays them on an LED matrix or 7-segment display array.
+
+1. Exercise 7.1: Memory Fundamentals
+2. Exercise 7.2: EEPROM Programming
+3. Exercise 7.3: Memory-Based Logic
+4. Project 7: Programmable Display
+
+<catsoop-section> Introduction to Microcontrollers </catsoop-section>
+
+**Goal**: Build a digital clock using an ATmega328P microcontroller to drive your 7-segment displays. Compare this approach with your discrete logic clocks.
+
+1. Exercise 8.1: Microcontroller Basics
+2. Exercise 8.2: Interfacing with Displays
+3. Exercise 8.3: Interrupts and Timing
+4. Project 8: Microcontroller Clock
+
+## Final Project
+
+**Goal**: Design and build your own digital system

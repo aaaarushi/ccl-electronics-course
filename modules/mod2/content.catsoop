@@ -1,3 +1,8 @@
+Build on your counting skills to create a fully functional digital clock. You'll learn why your Cascading
+Digit Counter jumps numbers while counting and how to generate precise timing signals with a 555
+timer chip. Then we will figure out how to make your counter reset at exactly 60 seconds or 24 hours so
+that your final clock can display hours and minutes in HH:MM format, and add buttons for setting the time.
+
 <a href="COURSE/modules/mod2/ex1">Exercise 1: Debounce</a>
 
 <a href="COURSE/modules/mod2/ex2">Exercise 2: Timing Circuits</a>

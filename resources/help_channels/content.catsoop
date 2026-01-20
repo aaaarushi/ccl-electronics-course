@@ -1,0 +1,60 @@
+### Debugging Checklist
+
+Before asking for help, try these:
+
+**Power**
+- [ ] Is Vcc getting +5V?
+- [ ] Is GND properly connected?
+- [ ] Are power rails continuous on breadboard?
+
+**Connections**
+- [ ] Are all wires firmly inserted?
+- [ ] Is IC oriented correctly (notch/dot at pin 1)?
+- [ ] Are components in the right holes?
+
+**Components**
+- [ ] Are LEDs oriented correctly (long leg = anode)?
+- [ ] Are capacitors correctly polarized (if electrolytic)?
+- [ ] Are you using the right IC (check chip number)?
+- [ ] Are resistor values correct (color code)?
+
+**Logic**
+- [ ] Does your circuit match the schematic?
+- [ ] Are signals going to the right pins?
+- [ ] Is your clock signal working?
+
+**Still stuck?** → Ask on WhatsApp or Piazza!
+
+### WhatsApp Group
+[Link to be added]
+
+### Course Discussion Forum
+[Link to be added]
+
+---
+
+### How to Ask Good Questions
+
+Include:
+- Which exercise/project you're working on
+- What you expected to happen
+- What actually happens
+- What you've already tried
+- Clear photos of your circuit (top view, good lighting)
+- Schematic if you have one
+
+Good example:
+```
+Module 1, Exercise 2
+Problem: My CD4026 isn't counting. Display stays at 0.
+What I tried: 
+- Verified 5V on pin 16, GND on pin 8
+- Checked clock signal with LED - it's blinking
+- Reset pin (15) is connected to GND
+Photo: [attached breadboard image]
+```
+
+Bad example:
+```
+"It doesn't work help"
+```

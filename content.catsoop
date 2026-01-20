@@ -1,11 +1,58 @@
-Hello!  This sample course, which is designed to go over some of the basics of
-CAT-SOOP, is set up to mirror the structure of a regular CAT-SOOP course.
+## Welcome!
 
-This is the main page, which, for a normal class, might contain a calendar, or
-weekly announcements, or links to assignments.  The contents of this page are
-contained in the `content.catsoop` in the root of the `sample_course`
-directory.  You should also take a look at `preload.py`, which controls much of
-the behavior of this page.
+This course takes you on a journey from understanding basic digital circuits to building working electronic systems — all with your own hands, from the ground up. No theory-only lectures here.
+## What You'll Build
 
-Additionally, more detailed information is available from the "Pages" dropdown
-at the top of this page.
+This is a 12-week journey from basic circuits to complex digital systems. By the end, you will:
+
+**Modules 1-2: Counters and Clocks**
+- Cascading decade counters with 7-segment displays
+- Digital clocks using CD4026 ICs and 555 timers
+- RC timing circuits and debouncing
+
+**Modules 3-4: Logic and Memory**
+- Binary counters and flip-flop circuits
+- Register files for data storage
+- Custom 7-segment decoders using logic gates
+
+**Modules 5-6: Arithmetic Circuits**
+- Half and full adders from scratch
+- 4-bit calculators with accumulators
+- ALUs using the 74181 chip
+
+**Modules 7-8: Memory Systems**
+- EEPROM programming and lookup tables
+- Memory-based logic design
+
+**Final Project**
+
+Choose your own build: Tetris game, calculator, giant LED clock, or create your own digital system
+
+## Course Philosophy
+
+**Learn by doing.** Every concept is immediately applied. You'll spend most of your time building circuits, not just reading about them. When something doesn't work (and it won't, at first), you'll learn to troubleshoot and fix it.
+
+## Who This Is For
+
+This course is designed for anyone interested in understanding how electronics actually work — whether you're a high school student, ITI/polytechnic student, or engineering undergraduate. No prior electronics experience required.
+
+## Course Structure
+
+The course is organized into modules, each with:
+- **Exercises**: Short hands-on tasks that teach you specific concepts
+- **Projects**: Larger builds where you combine everything you've learned
+
+You will get access to component kits and have instructors available to help when you're stuck.
+
+## Getting Started
+
+Ready to start building? Head to the <a href="COURSE/modules">**Modules**</a> page to begin your first exercise.
+
+## Questions?
+
+Check out our Help Channel or FAQs in the <a href="COURSE/resources">**Resources**</a> section.
+
+---
+
+Brought to you by the **Center for Creative Learning @ IIT Gandhinagar**. 
+Check out <a href="https://ccl.iitgn.ac.in/">our lab page</a> for more hands-on learning.

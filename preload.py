@@ -7,7 +7,7 @@ cs_base_color = "#A31F34"  # the base color
 cs_header = 'CCL.ELECTRONICS'  # the upper-left corner
 cs_icon_url = 'COURSE/favicon_local.gif'  # the favicon, if any
 # the 'header' text for the page
-cs_long_name = cs_content_header = "Intro to Electronics"
+cs_long_name = cs_content_header = "Introduction to Electronics"
 cs_title = 'Intro to Electronics - CCL'  # the browser's title bar
 
 # don't try to parse markdown inside of these tags
@@ -18,15 +18,16 @@ cs_markdown_ignore_tags = ('script', 'svg', 'textarea')
 #  * text: the text to show for the link
 #  * link: the target of the link (either a URL or another list of this same form)
 cs_top_menu = [
-    {'link': 'COURSE', 'text': 'Homepage'},
+    {'text': 'Home', 'link': 'COURSE'},
     {'text': 'Modules', 'link': [
                                 {'text': 'Module 1', 'link': 'COURSE/modules/mod1'},
                                 {'text': 'Module 2', 'link': 'COURSE/modules/mod2'},
                               ]},
     {'text': 'Resources', 'link': [
                                 {'text': 'Instructors', 'link': 'COURSE/resources/instructors'},
+                                {'text': 'Circuit Reference', 'link': 'COURSE/resources/reference'},
                                 {'text': 'Foundational Concepts', 'link': 'COURSE/resources/foundations'},
-                                {'text': 'Help Channel', 'link': 'COURSE/resources/help_channel'},
+                                {'text': 'Help Channel', 'link': 'COURSE/resources/help_channels'},
                                 {'text': 'FAQs', 'link': 'COURSE/resources/faqs'},
                               ]},
 #    {'text': 'Sample Menu', 'link': [
