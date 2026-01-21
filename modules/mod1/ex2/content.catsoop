@@ -1,5 +1,585 @@
-<catsoop-section>Binary</catsoop-section>
+<style>
+.figure {
+  text-align: center;
+  margin: 1rem 0;
+}
 
-<catsoop-section>What is an IC Chip?</catsoop-section>
+.figure img {
+  max-width: 100%;
+  max-height: 500px;
+}
 
-<catsoop-section>DIP Counter</catsoop-section>
+.figure figcaption {
+  font-style: italic;
+  color: #000;
+  font-size: 1rem;
+  margin-top: 0.3rem;
+}
+</style>
+
+In Exercise 1.1, you learned how to control LEDs using switches. Now we'll learn how computers actually count and represent numbers. By the end of this exercise, you'll build a circuit that converts binary numbers (the language of computers) into decimal numbers (the numbers we use every day) and displays them on a 7-segment display.
+
+<catsoop-section>Understanding Binary</catsoop-section>
+
+### How We Count
+
+When you count normally, you use ten digits: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9. After 9, you add another digit and start over: 10, 11, 12... This is called the decimal system (base-10) because it uses 10 different symbols.
+
+But what if you could only use two symbols? That's exactly how computers work. They only understand two states: ON or OFF, voltage present or no voltage, 1 or 0. This is called the binary system (base-2).
+
+### Binary Numbers
+
+In binary, you can only use two digits: 0 and 1.
+
+Let's count in binary:
+- 0 in binary = 0 in decimal
+- 1 in binary = 1 in decimal
+- 10 in binary = 2 in decimal (we ran out of digits, so we add a new place)
+- 11 in binary = 3 in decimal
+- 100 in binary = 4 in decimal
+- 101 in binary = 5 in decimal
+- 110 in binary = 6 in decimal
+- 111 in binary = 7 in decimal
+- 1000 in binary = 8 in decimal
+
+<question multiplechoice>
+csq_prompt = "What is 1001 in binary equal to in decimal?"
+csq_options = ["7", "8", "9", "10"]
+csq_soln = 3
+csq_explanation = "1001 in binary = 8 + 0 + 0 + 1 = 9 in decimal"
+</question>
+
+### Place Values in Binary
+
+Just like in decimal where each position represents a power of 10 (ones place, tens place, hundreds place), in binary each position represents a power of 2.
+
+<figure class="figure">
+  <img src="CURRENT/binary_place_values.webp">
+  <figcaption>Binary place values: each position doubles</figcaption>
+</figure>
+
+Reading from right to left:
+- First position (rightmost) = 2⁰ = 1
+- Second position = 2¹ = 2
+- Third position = 2² = 4
+- Fourth position = 2³ = 8
+
+To convert binary to decimal, multiply each digit by its place value and add them up:
+
+Example: 1001 in binary
+- 1 × 8 = 8
+- 0 × 4 = 0
+- 0 × 2 = 0
+- 1 × 1 = 1
+- Total: 8 + 0 + 0 + 1 = 9 in decimal
+
+<question multiplechoice>
+csq_prompt = "What is 0110 in binary equal to in decimal?"
+csq_options = ["3", "4", "5", "6"]
+csq_soln = 4
+csq_explanation = "0110 = (0×8) + (1×4) + (1×2) + (0×1) = 0 + 4 + 2 + 0 = 6"
+</question>
+
+<question multiplechoice>
+csq_prompt = "What is 1111 in binary equal to in decimal?"
+csq_options = ["14", "15", "16", "17"]
+csq_soln = 2
+csq_explanation = "1111 = (1×8) + (1×4) + (1×2) + (1×1) = 8 + 4 + 2 + 1 = 15. This is the largest number you can represent with 4 binary digits."
+</question>
+
+### Binary in Circuits
+
+In your circuits, binary digits (called bits) are represented by voltage levels:
+- 1 = high voltage (~5V)
+- 0 = low voltage (~0V, ground)
+
+This means we can use switches to create binary numbers! When a switch is ON, that bit is 1. When it's OFF, that bit is 0.
+
+**Note: Binary is a foundational concept in electrical engineering and computer science. Before moving on, make sure you understand this new number system and are completely comfortable converting back and forth from decimal. Check out the [extra resources page](COURSES/resources/foundations) for videos, exercises, and games on binary.**
+
+<catsoop-section>Representing Binary with DIP Switches</catsoop-section>
+
+Remember our circuit from Exercise 1.1? We were using an 8-bit DIP switch to light up 8 LEDs, then we used the 8-bit DIP switch to light up different segments on the 7-segment display. We can use that same 8-bit DIP switch to represent an 8-digit binary number, where an OFF switch represents a 0 in that place value and an ON switch represents a 1!
+
+> TODO: INSERT PHOTO OF EXERCISE 1.1 CIRCUIT
+
+<figure class="figure">
+  <img src="CURRENT/reading_binary_dip.png">
+  <figcaption>8-bit DIP switch representing an 8-bit binary number</figcaption>
+</figure>
+
+When reading a binary number off the DIP switch, ignore the 1 through 8 numberings on the bottom. Read it left to right, using the normal math convention that the right-most digit is the ones place. It can be helpful to label your switches to match the binary place values diagram above.
+
+<question smallbox>
+csq_prompt = 'What BINARY number is represented by the DIP switch above? '
+csq_soln = 11110001
+csq_check_function = lambda sub, sol: int(sub) == sol
+csq_size = 20 # width of text box
+csq_explanation = "The switches are ON, ON, ON, ON, OFF, OFF, OFF, ON corresponding to 11110001"
+</question>
+
+<question smallbox>
+csq_prompt = 'What DECIMAL number is represented by the DIP switch above? '
+csq_soln = 241
+csq_check_function = lambda sub, sol: int(sub) == sol
+csq_size = 10 # width of text box
+csq_explanation = "11110001 = 128 + 64 + 32 + 16 + 0 + 0 + 0 + 1 = 241"
+</question>
+
+<question smallbox>
+csq_prompt = 'What is the largest number we can represent with an 8-bit DIP switch? '
+csq_soln = 255
+csq_check_function = lambda sub, sol: int(sub) == sol
+csq_size = 10 # width of text box
+</question>
+
+<question multiplechoice>
+csq_prompt = "Which switches should be ON to represent this number?"
+csq_options = [
+    "8",
+    "1", 
+    "8 and 1",
+    "All switches",
+    "No switches"
+]
+csq_soln = "All switches"
+csq_explanation = "The largest number that can be represented with a limited number of bits is when every bit is 1 (or ON)."
+</question>
+
+You can practice setting numbers on your DIP switch with your circuit from Exercise 1.1. Note that your switches are still controlling arbitrary segments on your 7-segment display, so the number you are inputting will NOT match the shape displayed!
+```
+1. Set all switches to OFF. This represents 00000000 = 0.
+2. Turn ON only the rightmost switch (the "1" position). This represents 00000001 = 1.
+3. Turn ON only the switch labeled "2". This represents 00000010 = 2.
+4. Turn ON the "2" and "1" switches. This represents 00000011 = 3.
+```
+
+<question multiplechoice>
+csq_prompt = "Which switches should be ON to represent the decimal number 5?"
+csq_options = [
+    "8 and 1",
+    "4 and 1", 
+    "8 and 4",
+    "2 and 1"
+]
+csq_soln = 2
+csq_explanation = "5 in binary is 0101 = (0×8) + (1×4) + (0×2) + (1×1) = 4 + 1 = 5"
+</question>
+
+<question multiplechoice>
+csq_prompt = "If the switches labeled 5, 6, and 7 are ON, what decimal number does this represent?"
+csq_options = ["112", "111", "14", "567"]
+csq_soln = 3
+csq_explanation = "00001110 in binary = 0 + 0 + 0 + 0 + 8 + 4 + 2 + 0 = 14"
+</question>
+
+Now we know one way to input a binary number to our circuit. Let's see how we can convert our DIP switch input into a decimal number to display.
+
+<catsoop-section>Introduction to IC Chips</catsoop-section>
+
+### What is an IC?
+
+<figure class="figure">
+  <img src="CURRENT/ic_chips.webp">
+  <figcaption>Examples of IC chips</figcaption>
+</figure>
+
+IC stands for Integrated Circuit. An IC chip is a small package containing dozens, thousands, or even millions of electronic components all working together to perform a specific function.
+
+They come in all shapes and sizes, but the general idea is that you give it some inputs, it does some processing inside (which you don't need to understand yet), and it gives you outputs. Some of its metal legs (which we call **pins**) we use to send input, and some of its pins can send us output.
+
+Each IC chip has a specific name, function, and pinout. The pinout diagram is how we know which pins are input and which output. Today we will use the 74LS48 IC, which converts a 4-bit binary number input into decimal output for a 7-segment display, and has the following pinout diagram:
+
+<figure class="figure">
+  <img src="CURRENT/74ls48_pinout.png">
+  <figcaption>74LS48 pinout diagram</figcaption>
+</figure>
+
+Most ICs in this course come in a DIP (Dual In-line Package) format. This means:
+- Two parallel rows of pins
+- A notch or dot marks pin 1
+- Pins are numbered counter-clockwise starting from pin 1
+- The chip straddles the center gap of the breadboard
+
+Important: Always place IC chips straddling the center gap so the two rows of pins don't accidentally connect to each other.
+
+For the 74LS48:
+- Pin 8: GND (ground)
+- Pin 16: Vcc (power, +5V)
+- Pins 7, 1, 2, 6: Inputs (A, B, C, D) - these receive your 4-bit binary number
+- Pins 9-15: Outputs (a, b, c, d, e, f, g) - these connect to the 7-segment display
+
+Rule of thumb: Almost all DIP IC chips have power (Vcc) on the top-left and ground (GND) on the bottom-right. Always connect these first!
+
+<question multiplechoice>
+csq_prompt = "Before connecting any inputs or outputs, which two pins should you ALWAYS connect first on any IC?"
+csq_options = [
+    "Pin 1 and Pin 2",
+    "Vcc and GND",
+    "The input pins",
+    "The output pins"
+]
+csq_soln = 2
+csq_explanation = "Always connect power (Vcc) and ground (GND) first. Without power, the chip cannot function. This also prevents damage from connecting signals before power."
+</question>
+
+<catsoop-section>Wiring the 74LS48 IC</catsoop-section>
+
+Now let's add the 74LS48 to your circuit and connect it to your binary input switches.
+
+### Step 1: Power the IC
+
+```
+1. Make sure your power is OFF.
+2. Find your 74LS48 IC chip. The number should be written on the top black part of your IC. The end of the number sometimes has an E or N, which just describes how the chip is packaged for use. As long as the main letters and symbols line up, its the same chip.
+3. Place the IC on your breadboard straddling the center gap. Keep its orientation consistent with the pinout diagram above for easy wiring. Look for the notch or small dot that marks pin 1.
+```
+
+
+<question multiplechoice>
+csq_prompt = "Why must the IC straddle the center gap?"
+csq_options = [
+    "It looks better",
+    "To prevent the two rows of pins from shorting together",
+    "It doesn't matter where you place it",
+    "To save space"
+]
+csq_soln = 2
+csq_explanation = "If both rows of pins were in the same section, they would be electrically connected through the breadboard's internal connections, causing a short circuit and damaging the IC."
+</question>
+
+```
+4. Using a jumper wire, connect the Vcc IC pin to the power rail.
+5. Using a jumper wire, connect the GND IC pin to the ground rail.
+```
+
+<question multiplechoice>
+csq_renderer = 'checkbox'
+csq_prompt = "Now you have which of the following two connections:"
+csq_options = [
+    "Pin 8 to red rail",
+    "Pin 8 to blue rail",
+    "Pin 16 to red rail",
+    "Pin 16 to blue rail"
+]
+csq_soln = [False, True, True, False]
+csq_explanation = "See IC pinout diagram and remember which color rail is power and which is ground."
+</question>
+
+
+
+### Step 2: Connect Inputs from the DIP Switch
+
+Now we'll connect your DIP switch to the IC's input pins instead of directly to the 7-segment display. However, your DIP switch is 8 bits but as we saw in the IC's pinout diagram, the 74LS48 only takes 4 inputs, ABCD. We will treat the DIP switch as a 4-bit by only connecting its least significant (right-most) four pins.
+
+Looking at the IC pinout:
+- Input A (LSB, least significant bit) = pin 7
+- Input B = pin 1  
+- Input C = pin 2
+- Input D (MSB, most significant bit) = pin 6
+
+The inputs are in a strange order on the chip, so be careful!
+
+```
+6. Remove the jumper wires connecting your DIP switch to the 7-segment display.
+7. Keep the DIP switch with one side of its pins connected to positive rail.
+8. Connect the other pin of the right-most switch (labeled 8) to the IC pin corresponding to the least significant bit.
+9. Similarly connect switches 7, 6, and 5 to the IC pin corresponding to the correct place value.
+```
+
+Now check your circuit: 
+
+<question multiplechoice>
+csq_prompt = 'Switch 1 is connected to IC pin '
+csq_options = list(range(1, 17)) + ["None"]
+csq_soln = 16
+</question>
+<question multiplechoice>
+csq_prompt = 'Switch 2 is connected to IC pin '
+csq_options = list(range(1, 17)) + ["None"]
+csq_soln = 16
+</question>
+<question multiplechoice>
+csq_prompt = 'Switch 3 is connected to IC pin '
+csq_options = list(range(1, 17)) + ["None"]
+csq_soln = 16
+</question>
+<question multiplechoice>
+csq_prompt = 'Switch 4 is connected to IC pin '
+csq_options = list(range(1, 17)) + ["None"]
+csq_soln = 16
+</question>
+<question multiplechoice>
+csq_prompt = 'Switch 5 is connected to IC pin '
+csq_options = list(range(1, 17)) + ["None"]
+csq_soln = 5
+</question>
+<question multiplechoice>
+csq_prompt = 'Switch 6 is connected to IC pin '
+csq_options = list(range(1, 17)) + ["None"]
+csq_soln = 1
+</question>
+<question multiplechoice>
+csq_prompt = 'Switch 7 is connected to IC pin '
+csq_options = list(range(1, 17)) + ["None"]
+csq_soln = 0
+</question>
+<question multiplechoice>
+csq_prompt = 'Switch 8 is connected to IC pin '
+csq_options = list(range(1, 17)) + ["None"]
+csq_soln = 6
+</question>
+
+Why this order? The 74LS48 IC labels A as the least significant bit (LSB) and D as the most significant bit (MSB). We want switch 8 to control the 1's place, so it goes to input A.
+
+<question multiplechoice>
+csq_prompt = "If you want to input the binary number 1000 (decimal 8), which switch should be ON?"
+csq_options = [
+    "Switch 5",
+    "Switch 6",
+    "Switch 7",
+    "Switch 8"
+]
+csq_soln = 0
+csq_explanation = "Binary 1000 has only the most significant bit set, which is the 8's place (input D on pin 6)."
+</question>
+
+### Step 3: Connect Outputs to the 7-Segment Display
+
+Remember the 7-segment display has 7 input pins that each control one LED segment. The 74LS48 IC both converts the 4-bit binary input into the decimal number to display, and outputs the correct light-up pattern of the 7 segments in its 7 output pins. This is why we call this IC a BCD (Binary Coded Decimal) to 7-Segment Decoder. We just need to connect the a-g output pins on the IC to the corresponding a-g input pins on the 7-segment display. Here is the pinout diagram again for reference. 
+
+<figure class="figure">
+  <img src="COURSE/modules/mod1/ex1/7segment-pinout.png">
+  <figcaption>7-segment display pinout</figcaption>
+</figure>
+
+```
+10. Make sure the 7-segment display GND pins are still connected to the ground rail.
+11. Connect the a-g IC output pins to the a-g 7-segment display input pins. Reading pinout diagrams is easier when your components are oriented in the same direction as the diagram.
+```
+
+<question multiplechoice>
+csq_prompt = "What happens if you forget to connect the common cathode to ground?"
+csq_options = [
+    "The display will be very bright",
+    "Nothing - no segments will light up",
+    "The IC will be damaged",
+    "Only segment 'a' will work"
+]
+csq_soln = 2
+csq_explanation = "LEDs need a complete circuit. Without the cathode connected to ground, there's no return path for current, so no segments can light up."
+</question>
+
+Remember from Exercise 1.1 that LEDs need a resistor in order to turn on. One option could be to connect each a-g pin of the IC to the corresponding a-g pin of the 7-segment LED with a resistor, but this would mean that every 7-segment display that we add requires 7 resistors.
+Instead, let's remember that it doesn't matter if the resistor comes before or after the LED, as long as they are next to eachother in the ciruit. With this in mind, we can instead put just one resistor between the GND pin of the 7-segment display and the GND rail. This way, regardless of which LED is on, the current will still pass through this resistor.
+
+```
+12. Connect a 220Ω resistor between the GND pin of the 7-segment display and the GND rail. All other resistors can be removed.
+```
+
+This is a lot of wiring! Take your time and double-check each connection. It helps to do one segment at a time and test as you go.
+
+A helpful technique: Use different colored wires for different segments to make debugging easier. For example:
+- Red for segment a
+- Orange for segment b  
+- Yellow for segment c
+- And so on...
+
+<catsoop-section>Testing Your Binary to Decimal Converter</catsoop-section>
+
+Time for the moment of truth! Let's test your circuit.
+
+```
+13. Triple-check all connections. Mentally trace through the flow of current, from the power rail to the IC to the 7-segment display, and trace through the flow of information by matching pins using each component's pinout diagrams.
+14. Turn power ON.
+15. Set all DIP switches to OFF.
+```
+
+What do you see? The display should show "0"!
+
+Now try different numbers:
+
+```
+16. Turn ON the right-most switch. The display should show "1".
+17. Turn OFF that switch and turn ON only the 7th switch. Display should show "2".
+18. Turn ON both switches. Display should show "3".
+19. Try making other numbers up to 15.
+```
+
+<question multiplechoice>
+csq_prompt = "Which switches should be ON to display the number 7?"
+csq_options = [
+    "5 only",
+    "6, 7, 8",
+    "5, 6, 7, 8",
+    "6, 7"
+]
+csq_soln = 2
+csq_explanation = "7 in binary = 0111 = 4 + 2 + 1. Turn ON the three right-most switches."
+</question>
+
+### What About Numbers Above 9?
+
+Try setting your switches to binary 1010 (decimal 10). What happens?
+
+<question multiplechoice>
+csq_prompt = "When you input binary 1010 (decimal 10), what does the 7-segment display show?"
+csq_options = [
+    "10 (somehow shows two digits)",
+    "A weird pattern that isn't 0-9",
+    "Nothing at all",
+    "It shows 0"
+]
+csq_soln = 2
+csq_explanation = "The 74LS48N is designed to show digits 0-9. For inputs 10-15, it displays patterns that aren't standard numbers. This is normal behavior."
+</question>
+
+The 74LS48N can only display digits 0-9. When you input 10-15, you'll see strange patterns because these numbers don't exist in our normal base-10 system.
+
+<catsoop-section>Debugging with a Multimeter</catsoop-section>
+
+<figure class="figure">
+  <img src="CURRENT/multimeter.jpg">
+</figure>
+
+This is a multimeter, a tool used to measure electrical values in a circuit.
+In this course, you can use a multimeter to measure voltage, check how much current is flowing, or check the resistance of a component.
+Multimeters are your friends! They help you debug circuits by letting you test what is actually happening instead of guessing.
+
+Let's verify the IC is receiving power correctly.
+
+```
+1. Set your multimeter to DC voltage mode (V⎓).
+2. Turn your power ON.
+3. Place the black probe on pin 8 (GND).
+4. Place the red probe on pin 16 (Vcc).
+5. You should read approximately 5V. If not, check your power connections.
+```
+
+<question multiplechoice>
+csq_prompt = "You measure pin 16 and get 0V. What is most likely wrong?"
+csq_options = [
+    "The IC is dead",
+    "Pin 16 is not connected to the positive rail",
+    "Your multimeter is broken",
+    "This is normal"
+]
+csq_soln = 2
+csq_explanation = "0V means pin 16 is not receiving power. Check that your jumper wire goes from pin 16 to the red positive rail, and that the rail is connected to your power supply."
+</question>
+
+You can check if signals are reaching the IC:
+
+```
+1. Black probe on GND (IC pin 8)
+2. Red probe on an input pin (like pin 7)
+3. Turn corresponding switch ON - should read ~5V
+4. Turn switch OFF - should read ~0V
+```
+
+If an input pin doesn't change voltage when you flip the switch, the wire isn't connected properly.
+
+<question multiplechoice>
+csq_prompt = "Your display shows 5 when you want to show 3. What's the most likely problem?"
+csq_options = [
+    "The IC is damaged",
+    "The inputs are connected in the wrong order",
+    "The display is upside down",
+    "The resistors are too small"
+]
+csq_soln = 2
+csq_explanation = "Binary 0011 (3) and 0101 (5) differ in the 2nd and 3rd bits. If inputs B and C are swapped, input 0011 would be read as 0101. Check your input wiring order!"
+</question>
+
+If your display is very dim, check your resistor values. Too high resistance results in a dim display; too low and you risk damage (and an LED display that doesn't light up).
+
+
+<catsoop-section>Understanding What You Built</catsoop-section>
+
+Let's review what just happened:
+
+1. You used DIP switches to create a 4-bit binary number
+2. Those switches send either 5V (binary 1) or 0V (binary 0) to the IC
+3. The 74LS48N chip reads those 4 bits
+4. Inside the chip, complex logic circuits decode the binary number
+5. The chip activates the correct output pins to light up segments
+6. The 7-segment display shows the decimal digit
+
+This is exactly how computers work! They represent everything as binary (1s and 0s), process it with logic circuits, and convert it back to something humans can understand.
+
+### Why This Matters
+
+You just built a fundamental building block of digital electronics. This same principle is used in:
+- Digital clocks (coming in the next exercises!)
+- Calculators
+- Computer displays
+- Instrument panels
+- Any device that shows numbers
+
+The only difference is they might have more bits (to show bigger numbers) or use different display technologies, but the core concept is the same.
+
+<question multiplechoice>
+csq_prompt = "If you wanted to display numbers from 0 to 1023, how many binary bits would you need?"
+csq_options = ["4 bits", "6 bits", "8 bits", "10 bits"]
+csq_soln = 4
+csq_explanation = "10 bits can represent 28 = 1024 different values (0-1023). Each additional bit doubles the range."
+</question>
+
+<catsoop-section>Challenge: Verify the Truth Table</catsoop-section>
+
+A truth table shows all possible inputs and their corresponding outputs. Let's create one for your circuit!
+
+<question smallbox>
+csq_prompt = "Set your switches to binary 0110 (decimal 6). Which segments should be lit? List them as letters separated by commas (e.g., a,b,c)."
+csq_soln = ["a,b,c,d,e,g", "abcdeg", "a, b, c, d, e, g"]
+csq_explanation = "The digit 6 on a 7-segment display uses all segments except f."
+</question>
+
+Try creating your own truth table:
+
+Binary Input (D C B A) | Decimal | Segments Lit |
+| ----------- | ----------- | ----------- | 
+0 0 0 0                | 0       | a,b,c,d,e,f |
+0 0 0 1                | 1       | ? |
+0 0 1 0                | 2       | ? |
+...
+
+Fill this in by testing each combination on your circuit!
+
+<catsoop-section>Recap</catsoop-section>
+
+Congratulations! You've learned:
+
+✓ How binary numbers work and why computers use them
+
+✓ What an IC chip is and how to read a pinout diagram
+
+✓ How to properly power an IC (Vcc and GND first!)
+
+✓ How to connect inputs and outputs to an IC
+
+✓ How to use a multimeter to verify voltages
+
+✓ How to systematically debug a circuit
+
+✓ How to build a binary-to-decimal decoder
+
+### Optional: Take It Further
+
+Want to experiment more? Try these challenges:
+
+1. Add a 5th LED that lights up only when your binary input is greater than 9 (hint: you'll need to use some of the strange patterns for 10-15)
+
+2. Use your multimeter to measure the voltage on each output pin (13, 12, 11, 10, 9, 15, 14) for different inputs. When should each pin be HIGH (~5V) vs LOW (~0V)?
+
+3. Can you figure out what segments light up for inputs 10-15? Draw the patterns you see.
+
+### Final Submission
+
+<question fileupload>
+csq_prompt = "Upload a short video (30 seconds) showing your circuit working. Make sure the 7-segment LED display is clearly visible and show the right segments turning on and off when you input a binary number on the DIP switches."
+</question>
+
+---
+
+[In the next exercise](COURSES/modules/mod1/ex3), you'll learn about counters - ICs that automatically count in sequence. You'll combine what you learned here with a counter chip to build a circuit that counts from 0-9 automatically, without needing to flip switches manually. 
