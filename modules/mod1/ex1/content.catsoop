@@ -33,9 +33,9 @@ will turn one segment on or off. If you don't know what these words mean, don't 
   <h3>INSERT VIDEO OF SOMEONE MESSING WITH DIP SWITCH AND LIGHTS HERE</h3>
 </div>
 
-<catsoop-section>Materials</catsoop-section>
+<catsoop-section>Power</catsoop-section>
 
-Before we begin, let's get familiar with the hardware you will use for this exercise.
+To start us off, let's explore how our circuit gets powered.
 
 ### Breadboard
 
@@ -68,16 +68,34 @@ The 5V label describes the **voltage** of the circuit, which is the “push” t
 </figure>
 
 This is an adapter, allowing us to connect our power source to our breadboard. The adapter splits the power supply into a red and black wire.
-We call the side of the power supply with voltage the **positive terminal** and use red wires wires to identify it, while ground is called **GND** or the **negative terminal** and is denoted with black wires. 
+We call the side of the power supply with voltage the **positive terminal** and use red wires wires to identify it, while ground can be called **GND** or the **negative terminal** and is denoted with black wires. 
 
-With general convention, the red rail of the breadbaord is used for the positive terminal of the power supply, 
+With general convention, the red rail of the breadboard is used for the positive terminal of the power supply, 
 and the blue rail is used for ground. Both rails of the breadboard are identical in hardware, but this convention ensures that as you work, 
 you do not accidentally mistake the positive terminal for ground.
+
+**Note: If you connect the 5V terminal directly to GND, with no components in between, this creates a *short circuit*. The energy from the power source cannot be dissipated, and will lead to large amounts of current flowing from 5V to GND which can permanently damage equipment.**
+
+Let's connect our breadboard!
+
+```
+1. Connect the adapter to the power supply.
+2. With your power source OFF, connect the red wire of the adapter to the red breadboard rail, and the black wire to the blue breadboard rail.
+```
 
 Current will only flow if the circuit is a complete loop, meaning there is a path directly from the positive (red) side of the power supply, through components, and back to the negative (black) side.
 If the loop is broken and there is an **open circuit**, electricity cannot flow.
 
-**Note: If you connect the 5V terminal directly to GND, with no components in between, this creates a *short circuit*. The energy from the power source cannot be dissipated, and will lead to large amounts of current which can permanently damage equipment.**
+<question multiplechoice>
+csq_prompt = "With this setup, is there any current flowing through the breadboard?"
+csq_options = ["Yes", "No"]
+csq_soln = 2
+csq_explanation = "The positive terminal is connected to the red rail, and the negative terminal is connected to the blue rail, but the two are not connected to eachother. Therefore a closed loop is not formed, so even if we turn the power source on, there is no current flowing."
+</question>
+
+<catsoop-section>LEDs and Resistors</catsoop-section>
+
+Now, let's see how we can harness this power to turn on an LED.
 
 ### LED
 
@@ -103,9 +121,6 @@ resistor color code calculator.
  
 By slowing down the flow of current, the resistor can protect other components, such as LEDs, which need less current to operate.
 
-<figure class="figure">
-  <img src="CURRENT/220resistor.jpeg">
-</figure>
 
 <question multiplechoice>
 csq_prompt = "Using the resistor color code calculator, what is the size of this resistor?"
@@ -113,52 +128,15 @@ csq_options = ["150 Ω", "4.1k Ω", "220 Ω", "1 Ω"]
 csq_soln = 1
 </question>
 
-### Jumper Wires
-
 <figure class="figure">
-  <img src="CURRENT/jumper.png">
+  <img src="CURRENT/220resistor.jpeg">
 </figure>
 
-This is a jumper wire, which is used to make electrical connections between different points on a breadboard.
-By placing each end of a jumper wire into a hole, you connect those two rows so current can flow between them.
+### Safety
 
-### DIP Switch
+We are just about ready to make your first circuit! Before we continue, safety is very important when working with electronics, even in simple circuits like the ones in this course.
 
-<figure class="figure">
-  <img src="CURRENT/dip.webp">
-</figure>
-
-This is a DIP switch, which is a small set of on-off switches packaged together in one component.
-Each tiny switch can open or close a circuit, allowing or stopping current from flowing.
-Soon, you will use a DIP switch to manually turn individual LEDs on or off.
-
-<question multiplechoice>
-csq_prompt = "When the DIP switch is ON, is the circuit open or closed?"
-csq_options = ["Open", "Closed"]
-csq_soln = 2
-</question>
-
-<question multiplechoice>
-csq_prompt = "When the DIP switch is OFF, is the circuit open or closed?"
-csq_options = ["Open", "Closed"]
-csq_soln = 1
-</question>
-
-### Multimeter
-
-<figure class="figure">
-  <img src="CURRENT/multimeter.jpg">
-</figure>
-
-This is a multimeter, a tool used to measure electrical values in a circuit.
-In this course, you can use a multimeter to measure voltage, check how much current is flowing, or check the resistance of a component.
-Multimeters are your friends! They help you debug circuits by letting you test what is actually happening instead of guessing.
-
-<catsoop-section>Safety</catsoop-section>
-
-We are just about ready to make your first circuit! Before we begin, safety is very important when working with electronics, even in simple circuits like the ones in this course.
-
-**Always make sure there is a component, such as a resistor or LED, between your positive terminal and ground.**
+**Always make sure there is a component, such as a resistor, between your positive terminal and ground.**
 As we discussed earlier, if you connect 5V directly to ground with a wire, you create a short circuit. This allows large amounts of current to flow, which can overheat wires, damage components, or shut down your power source. 
 
 **Keep all electronic componets away from water or wet hands.**
@@ -202,15 +180,11 @@ csq_explanation = "A short circuit allows large amounts of current to flow, whic
 
 <catsoop-section>Turn On an LED</catsoop-section>
 
-Time to make your first circuit! To start us off, lets ensure that our breadboard will have access to power.
+Time to connect our LED!
 
-1. Connect the adapter to the power supply.
-2. With your power source OFF, connect the red wire of the adapter to the red breadboard rail, and the black wire to the blue breadboard rail.
-
-**Remember, connecting the positive rail and the GND rail directly to eachother could cause safety hazards and damage your components.**
-
-3. Connect one leg of the LED to the red positive rail, and the other to an empty horizontal row on the breadboard.
-
+```
+1. Connect one leg of the LED to the red positive rail, and the other to an empty horizontal row on the breadboard.
+```
 <question multiplechoice>
 csq_prompt = "If current should flow from the anode (long leg) to the cathode (short leg), which leg should be connected to the positive rail?"
 csq_options = [
@@ -220,14 +194,96 @@ csq_options = [
 csq_soln = 2
 </question>
 
-4. Connect a 220Ω resistor from the row that has the leg of the LED back to the GND rail.
-5. Check that your wiring should form a complete loop of power source (positive) ->red rail -> LED -> resistor -> blue rail -> power source (ground).
-6. Turn your power source on. At this point, the LED should turn on! Congratulations on your first circuit!
+```
+2. Connect a 220Ω resistor from the horizontal row that has the unconnected leg of the LED back to the GND rail.
+3. Check that your wiring forms a complete loop of power source (positive) -> red rail -> LED -> resistor -> blue rail -> power source (ground).
+4. Turn your power source on. At this point, the LED should turn on! Congratulations on your first circuit!
+```
+
+**If your LED does not light:**
+- Check the direction of the LED (it may be backwards).
+- Check that one leg of the resistor is in the same row as one leg of the LED, and the other leg of the resistor is connected to ground.
+- Check that the red rail of your breadboard is connected to the red wire of the power source, and the blue rail is connected to the black wire.
+- Check that your power source is on.
 
 
 <div style="text-align: center;">
   <h3>INSERT PHOTO OF LED ON IN CIRCUIT</h3>
 </div>
+
+<catsoop-section>Adjusting LED Brightness</catsoop-section>
+
+We mentioned that we need a resistor to light an LED, because we need to limit the amount of current going through the LED to protect the component.
+
+Let's do a mini experiment!
+
+```
+1. Make sure your power is OFF.
+2. Remove your 220Ω resistor, and one at a time, test your circuit with a 250Ω, 280Ω, 300Ω, and 330Ω resistor.
+```
+
+<question multiplechoice>
+csq_prompt = "What happens to the brightness of the LED as the resistance increases?"
+csq_options = [
+    "The brightness increases",
+    "The brightness decreases"
+]
+csq_soln = 2
+csq_explanation = As the resistance increases, the resistor limits the current flowing through the system. When the resistance is too high, there is not enough current flowing through the system, so the light becomes dimmer.
+</question>
+
+
+<catsoop-section>Control 8 LEDs</catsoop-section>
+
+If we can turn on one LED, let's turn on eight! For this, we will need a bit more hardware.
+
+### Jumper Wires
+
+<figure class="figure">
+  <img src="CURRENT/jumper.png">
+</figure>
+
+This is a jumper wire, which is used to make electrical connections between different points on a breadboard.
+By placing each end of a jumper wire into a hole, you connect those two rows so current can flow between them.
+
+### DIP Switch
+
+<figure class="figure">
+  <img src="CURRENT/dip.webp">
+</figure>
+
+This is a DIP switch, which is a small set of on-off switches packaged together in one component.
+Each tiny switch can open or close a circuit, allowing or stopping current from flowing.
+We can use a DIP switch to manually turn individual LEDs on or off.
+
+<question multiplechoice>
+csq_prompt = "When the DIP switch is ON, is the circuit open or closed?"
+csq_options = ["Open", "Closed"]
+csq_soln = 2
+</question>
+
+<question multiplechoice>
+csq_prompt = "When the DIP switch is OFF, is the circuit open or closed?"
+csq_options = ["Open", "Closed"]
+csq_soln = 1
+</question>
+
+
+
+
+### Multimeter
+
+<figure class="figure">
+  <img src="CURRENT/multimeter.jpg">
+</figure>
+
+This is a multimeter, a tool used to measure electrical values in a circuit.
+In this course, you can use a multimeter to measure voltage, check how much current is flowing, or check the resistance of a component.
+Multimeters are your friends! They help you debug circuits by letting you test what is actually happening instead of guessing.
+
+
+
+
 
 
 <catsoop-section>Control 8 LEDs</catsoop-section>
@@ -335,13 +391,6 @@ csq_explanation = "Across the gap, each pin lands on a different row group, so p
 
 
 
-<catsoop-section>LEDs</catsoop-section>
-
-An LED is a one-way part (it has direction).
-- The long leg is usually the anode (+ side).
-- The short leg is usually the cathode (– side).
-- The flat side on the LED body usually marks the cathode.
-
 Important:
 An LED must have a resistor in series.
 
@@ -354,10 +403,7 @@ Mini build: light one LED (test circuit)
 6. Turn power ON. The LED should light.
 7. Turn power OFF again before continuing.
 
-If it does not light:
-- Flip the LED (it may be backwards).
-- Check that the resistor is actually in series (not accidentally on the same node).
-- Check that rails are powered correctly.
+
 
 <question multiplechoice>
 csq_prompt = "If your LED does not light, what is the first simple thing to try?"
