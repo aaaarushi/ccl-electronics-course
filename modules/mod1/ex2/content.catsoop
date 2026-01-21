@@ -127,14 +127,14 @@ csq_explanation = "11110001 = 128 + 64 + 32 + 16 + 0 + 0 + 0 + 1 = 241"
 </question>
 
 <question smallbox>
-csq_prompt = 'What is the largest number we can represent with an 8-bit DIP switch? '
+csq_prompt = 'What is the largest DECIMAL number we can represent with an 8-bit DIP switch? '
 csq_soln = 255
 csq_check_function = lambda sub, sol: int(sub) == sol
 csq_size = 10 # width of text box
 </question>
 
 <question multiplechoice>
-csq_prompt = "Which switches should be ON to represent this number?"
+csq_prompt = "Which switches should be ON to represent this largest number?"
 csq_options = [
     "8",
     "1", 
@@ -209,7 +209,7 @@ For the 74LS48:
 - Pins 7, 1, 2, 6: Inputs (A, B, C, D) - these receive your 4-bit binary number
 - Pins 9-15: Outputs (a, b, c, d, e, f, g) - these connect to the 7-segment display
 
-Rule of thumb: Almost all DIP IC chips have power (Vcc) on the top-left and ground (GND) on the bottom-right. Always connect these first!
+Rule of thumb: Almost all DIP IC chips have power (Vcc) on pin 16 and ground (GND) on pin 8. Always connect these first!
 
 <question multiplechoice>
 csq_prompt = "Before connecting any inputs or outputs, which two pins should you ALWAYS connect first on any IC?"
@@ -371,10 +371,11 @@ csq_explanation = "LEDs need a complete circuit. Without the cathode connected t
 </question>
 
 Remember from Exercise 1.1 that LEDs need a resistor in order to turn on. One option could be to connect each a-g pin of the IC to the corresponding a-g pin of the 7-segment LED with a resistor, but this would mean that every 7-segment display that we add requires 7 resistors.
-Instead, let's remember that it doesn't matter if the resistor comes before or after the LED, as long as they are next to eachother in the ciruit. With this in mind, we can instead put just one resistor between the GND pin of the 7-segment display and the GND rail. This way, regardless of which LED is on, the current will still pass through this resistor.
+Instead, let's remember that it doesn't matter if the resistor comes before or after the LED, as long as they are next to each other in the ciruit. With this in mind, we can instead put just one resistor between the GND pin of the 7-segment display and the GND rail. This way, regardless of which LED is on, the current will still pass through this resistor.
 
 ```
 12. Connect a 220Ω resistor between the GND pin of the 7-segment display and the GND rail. All other resistors can be removed.
+13. Connect the other GND pin(s) to the GND rail with black jumper wires.
 ```
 
 This is a lot of wiring! Take your time and double-check each connection. It helps to do one segment at a time and test as you go.
