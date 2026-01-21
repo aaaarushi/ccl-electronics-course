@@ -1,5 +1,462 @@
-<catsoop-section>Clock Edges</catsoop-section>
+<style>
+.figure {
+  text-align: center;
+  margin: 1rem 0;
+}
 
-<catsoop-section>IC Chip Data Sheets</catsoop-section>
+.figure img {
+  max-width: 100%;
+  max-height: 500px;
+}
 
-<catsoop-section>7 Segment Display</catsoop-section>
+.figure figcaption {
+  font-style: italic;
+  color: #000;
+  font-size: 1rem; /* same as body text */
+  margin-top: 0.3rem;
+}
+</style>
+
+
+<div style="text-align: center;">
+  <h3>Simple Counting</h3>
+</div>
+
+In Exercise 1.2, you learned how to use an IC chip to display numbers on a 7-segment display. Now, we will expand our setup to use our 7-segment display as a counter going from 0 to 9!
+
+The exercises in this course build on each other with increasing levels of difficulty. Take a moment to make sure you have understood everything so far, and refer to the <a href="../../resources/">Resources page</a> if you need any help!
+
+<div style="text-align: center;">
+  <h3>INSERT VIDEO OF COUNTER INCREMENTING AS SOMEONE PUSHES THE BUTTON HERE</h3>
+</div>
+
+<catsoop-section>CD4026</catsoop-section>
+
+The IC chip we have used so far is the DM74LS48N. However, that chip's functionality is limited to displaying the decimal number that corresponds to a given binary input.
+
+What if we want our setup to count, rather than displaying one number at a time? For this, we will need to use the CD4026B.
+
+### CD4026B
+
+<figure class="figure">
+  <img src="CURRENT/CD4026B.jpg">
+</figure>
+
+Last time, we gave you the pinout of the DM74LS48N chip for you to connect on your breadboard. A crucial step in working with hardware is reading datasheets, so this time, we will teach you to read one on your own!
+
+Take a look at the
+<a href="CURRENT/cd4026b_spec.pdf" target="_blank">
+CD4026B's datasheet.
+</a>
+
+It seems like a lot, but generally the first few pages of a datasheet will have all of the information you need for basic circuits. For now, we will focus on two main areas of a datasheet.
+
+**1. Functionality Overview**
+
+As soon as you open the datasheet, you should see a big paragraph of text. This paragraph describes the functionality of the IC chip in English, letting users understand how the IC chip works in theory.
+
+**2. Pinout**
+
+If you look lower down on the first page, or occasionally somewhere on the first few pages, you should see a pinout diagram of the IC chip that shows what signals the IC chip expects as inputs for proper functionality. To find the pinout diagram, look for a rectangular shape with labeled pins like the one below.
+
+<figure class="figure">
+  <img src="CURRENT/example_pinout.webp">
+  <figcaption> Example pinout diagram for a different chip </figcaption>
+</figure>
+
+<question smallbox>
+csq_prompt = "Using the pinout diagram on the CD4026B's datasheet, what input is pin 12 expecting?"
+csq_soln = 'B'
+csq_check_function = lambda sub, sol: sub.lower().strip() == sol.lower()
+csq_size = 30 # width of text box
+</question>
+
+<question smallbox>
+csq_prompt = "Using the pinout diagram on the CD4026B's datasheet, what input is pin 1 expecting?"
+csq_soln = 'CLOCK'
+csq_check_function = lambda sub, sol: sub.lower().strip() == sol.lower()
+csq_size = 30 # width of text box
+</question>
+
+Now that we know how to find the IC chips's pinout, let's understand what each of the connections means.
+
+The CD4026B chip has a pin for VSS, VDD, A through G (for the 7-segment display), clock, clock inhibit, display enable in, display enable out, carry out, reset, and ungated "C" segment out. Let's go through them one at a time!
+
+**Input Pins: These are pins that allows us to give the IC chip information for it to function. Most ICs will have some input pins that are only needed for advanced functions, and can otherwise be left unconnected.**
+
+- **Vss:** This is a notation that pinout diagrams use for ground, which you are already familiar with. This pin should be connected to our GND rail.
+- **Vdd:** This is a notation that pinout diagrams use for the positive terminal. Generally, you should check the datasheet to see what voltage the component is expecting. For this IC, our 5V is fine.
+- **Clock:** This is a common signal for many IC chips. Without a clock, how would the IC know how fast it should change to the next number? *Ignore this pin for now. We will come back to it later in the exercise.*
+- **Clock inhibit:** If this pin is connected to 5V, it will freeze the current number on the screen and block the clock signal. *Ignore this pin.*
+- **Display enable in:** In order for anything to show up on our display, we must enable the display. We do this by connecting this pin to 5V. If this pin was connected to GND, our 7-segment would be empty, even though the chip may still be counting internally.
+- **Reset:** If this pin is connected to 5V, it will reset the counter to 0. *Ignore this pin for now. We will come back to it in this module's project*
+
+**Output Pins: These are pins that provide information from the IC chip which we can connect to other components. Not all of the output pins may be necessary for every project.**
+
+- **A-G:** These pins correspond to the A-G segments of the 7-segment LED like we talked about in Exercise 1.2. Each individual pin will go HIGH (5V) whenever that segment should be on to display a specific number, and the pin will be LOW (0V) otherwise.
+- **Display enable out:** This pin copies the value that is at display enable in. This is often used when we have multiple 7-segment LEDs that we are using together, and we want their displays to turn on and off at the same time. *Ignore this pin for now. We will come back to it in this module's project.*
+- **Carry out**: This pin will go HIGH when the counter reaches 9, and will return to LOW when it rolls back to 0. This functionality can be used to tell another counter when it should increment. *Ignore this pin for now. We will come back to it in this module's project.*
+- **Ungated "C" segment out:** This pin will correspond to the C segment of the 7-segment LED, but it ignores whether the display is enabled or not. This functionality can be useful for more advanced circuits. *Ignore this pin.*
+
+<catsoop-section>Displaying 0</catsoop-section>
+Let's begin by getting the 7-segment LED to display 0.
+
+```
+1. With your power off, remove your DM74LS48N chip, the DIP switch, and any extra jumper wires.
+2. Connect your CD4026B across the center gap of the breadboard, and connect each of the pins as described in the instructions above. If an instruction says to ignore this pin, leave it unconnected.
+3. Turn your power ON. At this point, you should see a zero appear on the 7-segment display!
+```
+
+**If your 7-segment LED does not light, or lights not in the shape of a zero:**
+- Check your power connections.
+- Check each of the IC connections.
+- Check that you are connecting each A-G IC pin to the correct pins of the 7-segment LED.
+- Make sure you still have a 220Ω resistor from the GND of the 7-segment LED to your ground rail.
+- If your circuit is still not working, try to mentally and physically walk through the circuit. 
+Remember that your path should be a connected loop from the 5V power source -> components -> GND of power source.
+
+<catsoop-section>Counting</catsoop-section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+This is a breadboard, a reusable board used to build and test electronic circuits easily. 
+The holes in a breadboard are internally connected, so placing wires or components in the same numbered row connects them electrically. This means that a component in hole 27A is automatically connected to a component in 27E without needing a wire. 
+The center gap keeps the left and right sides separate so components can be placed safely.
+
+The long blue and red vertical side rails are also internally connected, and are typically used to connect to power.
+
+<figure class="figure">
+  <img src="CURRENT/breadboard_labeled.jpeg">
+  <figcaption> Each line of dots is connected internally </figcaption>
+</figure>
+
+### Power Source
+
+<figure class="figure">
+  <img src="CURRENT/power.jpg">
+</figure>
+
+This is a 5V power source, which provides the energy needed for electricity to flow in a circuit.
+The 5V label describes the **voltage** of the circuit, which is the “push” that drives electricity through components. Voltage is measured in **Volts** (V).
+**Current** is what we call the flow of electric charge through the circuit, moving from the 5V power supply, through the components, and back to **ground** (0V). Current is measured in **Amps** (A).
+
+### Adapter
+<figure class="figure">
+  <img src="CURRENT/barrel_jack.webp">
+</figure>
+
+This is an adapter, allowing us to connect our power source to our breadboard. The adapter splits the power supply into a red and black wire.
+We call the side of the power supply with voltage the **positive terminal** and use red wires to identify it, while ground can be called **GND** or the **negative terminal** and is denoted with black wires. 
+
+By general convention, the red rail of the breadboard is used for the positive terminal of the power supply, 
+and the blue rail is used for ground. Both rails of the breadboard are identical in hardware, but this convention ensures that as you work, 
+you do not accidentally mistake the positive terminal for ground.
+
+**Note: If you connect the 5V terminal directly to GND, with no components in between, this creates a *short circuit*. Usually, the components between 5V and GND use up voltage. If the 5V and GND are connected directly to each other, energy from the power source cannot be dissipated, and will lead to large amounts of current flowing from 5V to GND which can permanently damage equipment.**
+
+Let's connect our breadboard!
+
+```
+1. Make sure your power source is OFF and not plugged into the wall.
+2. Connect the adapter to the power supply.
+3. Connect the red wire of the adapter to any hole in one of the red breadboard rails, and the black wire to the corresponding blue breadboard rail.
+```
+
+Current will only flow if the circuit is a complete loop, meaning there is a path directly from the positive (red) side of the power supply, through components, and back to the negative (black) side.
+If the loop is broken and there is an **open circuit**, electricity cannot flow.
+
+<question multiplechoice>
+csq_prompt = "With this setup, is there any current flowing through the breadboard?"
+csq_options = ["Yes", "No"]
+csq_soln = 2
+csq_explanation = "The positive terminal is connected to the red rail, and the negative terminal is connected to the blue rail, but the two are not connected to each other. Therefore a closed loop is not formed, so even if we turn the power source on, there is no current flowing."
+</question>
+
+<catsoop-section>LEDs and Resistors</catsoop-section>
+
+Now, let's see how we can close this circuit to turn on an LED.
+
+### LED
+
+<figure class="figure">
+  <img src="CURRENT/leds.png">
+</figure>
+
+This is an LED (light-emitting diode), a small electronic component that produces light when current flows through it in the correct direction.
+An LED has two legs. The longer one is called the anode, and the shorter one is called the cathode. The LED must be placed with the correct orientation, since it only allows current to flow one way, from the anode to the cathode.
+In this course, LEDs are used as lights, which help display information.
+
+### Resistor
+
+<figure class="figure">
+  <img src="CURRENT/resistors.png">
+  <figcaption> 6 different resistors
+</figure>
+
+This is a resistor, another component we can put between 5V and GND to complete our circuit. Resistors are used to limit how much current flows through a circuit. **Resistance** is measured in **Ohms** (Ω), and we can determine the size of a resistor by looking at the colors of the lines on the resistor, and inputting them into a 
+<a href="https://www.digikey.in/en/resources/conversion-calculators/conversion-calculator-resistor-color-code" target="_blank">
+resistor color code calculator.
+</a>
+ 
+By slowing down the flow of current, the resistor can protect other components, such as LEDs, which need less current to operate.
+
+
+<question multiplechoice>
+csq_prompt = "Using the resistor color code calculator, what is the size of this resistor?"
+csq_options = ["150 Ω", "4.1k Ω", "220 Ω", "1 Ω"]
+csq_soln = 3
+</question>
+
+<figure class="figure">
+  <img src="CURRENT/220resistor.jpeg">
+</figure>
+
+### Safety
+
+We are just about ready to make your first circuit! Before we continue, safety is very important when working with electronics, even in simple circuits like the ones in this course.
+
+**Always make sure there is a component, such as a resistor, between your positive terminal and ground.**
+As we discussed earlier, if you connect 5V directly to ground with a wire, you create a short circuit. This allows large amounts of current to flow, which can overheat wires, damage components, or shut down your power source. 
+
+**Keep all electronic components away from water or wet hands.**
+Water can conduct electricity and cause short circuits, damage parts, or create a shock hazard. Always work on a dry surface and never use electronics near sinks, cups, or spills.
+
+**Do not connect your circuit directly to wall outlets or your home's power.**
+Wall outlets have very high voltage (230V in India) and are extremely dangerous. You should only use low-voltage power sources such as 5V or 3.3V from a power supply, your computer's USB port, or a microcontroller.
+
+Safety Tips:
+* Turn your power off before changing wires or moving components.
+* When power is on, keep your hands off of exposed metal components in the circuit.
+* Never force components into the breadboard. Bent or broken pins can cause mistakes.
+* If something feels hot, smells strange, or does not behave as expected, disconnect power immediately and check your wiring.
+* When in doubt, ask for help or double-check the circuit before turning power back on.
+
+Following these rules will help keep you safe and protect your components while you learn!
+
+<question multiplechoice>
+csq_prompt = "When should you turn power ON?"
+csq_options = [
+    "While you are still moving components or wires",
+    "Only after you double-check your wiring and are ready to test",
+    "When the components are getting very hot",
+    "Any time is fine"
+]
+csq_soln = 2
+csq_explanation = "Power should only be turned on after the wiring is complete and checked. Moving wires while power is on can cause short circuits or damage components. If components are getting hot, turn the power off immediately."
+</question>
+
+<question multiplechoice>
+csq_prompt = "What do we call a direct connection from the positive terminal to GND with no components in between?"
+csq_options = [
+    "A load",
+    "An open circuit",
+    "A switch",
+    "A short circuit"
+]
+csq_soln = 4
+csq_explanation = "A short circuit allows large amounts of current to flow, which can damage components or the power source. The positive terminal should never be connected directly to GND."
+</question>
+
+<catsoop-section>Turn On an LED</catsoop-section>
+
+Time to connect our LED!
+
+```
+1. Connect one leg of the LED to the red positive rail, and the other to an empty horizontal row on the breadboard.
+```
+<question multiplechoice>
+csq_prompt = "If current should flow from the anode (long leg) to the cathode (short leg), which leg should be connected to the positive rail?"
+csq_options = [
+    "Short leg",
+    "Long leg"
+]
+csq_soln = 2
+</question>
+
+<div style="text-align: center;">
+  <h3>INSERT PHOTO OF LED IN BREADBOARD AND POWER RAILS CONNECTED TO ADAPTER</h3>
+</div>
+
+```
+2. Connect a 220Ω resistor from the horizontal row that has the unconnected leg of the LED back to the GND rail.
+3. Check that your wiring forms a complete loop of power source (positive) -> red rail -> LED -> resistor -> blue rail -> power source (ground). 
+```
+**Note: The order of the LED and resistor does not matter, as long as one goes after the other in the loop**
+```
+4. Turn your power source on. At this point, the LED should turn on! Congratulations on your first circuit!
+```
+
+**If your LED does not light:**
+- Check the direction of the LED (it may be backwards).
+- Check that one leg of the resistor is in the same row as one leg of the LED, and the other leg of the resistor is connected to ground.
+- Check that you are using a 220Ω resistor.
+- Check that the red rail of your breadboard is connected to the red wire of the power source, and the blue rail is connected to the black wire.
+- Check that your power source is on.
+- Try a different LED.
+
+
+<div style="text-align: center;">
+  <h3>INSERT PHOTO OF LED ON IN CIRCUIT</h3>
+</div>
+
+<catsoop-section>Adjusting LED Brightness</catsoop-section>
+
+We mentioned that we need a resistor to light an LED, because we need to limit the amount of current going through the LED to protect the component.
+
+Let's do a mini experiment!
+
+```
+1. Make sure your power is OFF.
+2. Remove your 220Ω resistor, and one at a time, test your circuit with a 270Ω and 330Ω resistor.
+```
+
+<question multiplechoice>
+csq_prompt = "What happens to the brightness of the LED as the resistance increases?"
+csq_options = [
+    "The brightness increases",
+    "The brightness decreases"
+]
+csq_soln = 2
+csq_explanation = "As the resistance increases, the resistor limits the current flowing through the system. When the resistance is too high, there is not enough current flowing, so the light becomes dimmer."
+</question>
+
+
+<catsoop-section>Control Multiple LEDs</catsoop-section>
+
+If we can turn on one LED, let's turn on eight! For this, we will need a bit more hardware.
+
+### DIP Switch
+
+<figure class="figure">
+  <img src="CURRENT/dip.webp">
+</figure>
+
+This is a DIP switch, which is a small set of on-off switches packaged together in one component.
+Each tiny switch can open or close a circuit, allowing or stopping current from flowing.
+We can use a DIP switch to manually turn individual LEDs on or off.
+
+<question multiplechoice>
+csq_prompt = "When the DIP switch is ON, is the circuit open or closed?"
+csq_options = ["Open", "Closed"]
+csq_soln = 2
+</question>
+
+<question multiplechoice>
+csq_prompt = "When the DIP switch is OFF, is the circuit open or closed?"
+csq_options = ["Open", "Closed"]
+csq_soln = 1
+</question>
+
+### Jumper Wires
+
+<figure class="figure">
+  <img src="CURRENT/jumper.png">
+</figure>
+
+This is a jumper wire, which is used to make electrical connections between different points on a breadboard.
+By placing each end of a jumper wire into a hole, you connect those two rows so current can flow between them.
+
+### 8 LED DIP Switch
+
+Let's make our new circuit!
+
+```
+1. Make sure your power is OFF.
+2. Using a red jumper wire, connect any hole of your connected red power rail to the other red rail on the breadboard. Using a black jumper wire, connect any hole of the blue ground rail you connected to the other blue rail on the breadboard. 
+```
+**Note: Now, both red rails are 5V and both blue rails are GND, so anytime you need to connect a component to 5V or GND you can use either side's rails.**
+```
+3. Connect your DIP switch across the center gap of the breadboard, so that one row of the switch is sitting on one side, and the other row is on the other side.
+```
+
+<div style="text-align: center;">
+  <h3>INSERT PHOTO OF DIP SWITCH ACROSS THE CENTER BREADBOARD GAP</h3>
+</div>
+
+```
+4. Connect 8 220Ω resistors to one side of the DIP switch, with each resistor having one leg connected to power and the other leg in one of the horizontal breadboard rows corresponding to the DIP switch.
+5. Connect 8 LEDs to the other side of the DIP switch, with each one having one leg in one of the horizontal breadboard rows corresponding to the DIP switch, and the other leg in GND.
+```
+<question multiplechoice>
+csq_prompt = "Remember that current flow goes in the direction of power to GND, and must go in the long leg of the LED and out the short leg. Knowing this, what leg of the LED should be connected to GND?"
+csq_options = ["Short leg", "Long leg"]
+csq_soln = 1
+</question>
+```
+6. Turn power ON! You should now be able to control which of your LED lights are on by turning each DIP switch ON or OFF.
+```
+
+**If your LEDs do not light:**
+- Check the direction of the LEDs (they may be backwards).
+- Check that each of the rows of the DIP switch has a resistor on one side and an LED on the other.
+- Check that you are using 220Ω resistors.
+- Check that the red rail of your breadboard is connected to the red wire of the power source, and the blue rail is connected to the black wire.
+- Check that both red rails are connected with a jumper wire, and that both blue rails are connected with a jumper wire.
+- Check that your power source is on.
+- Try a different LED.
+
+<catsoop-section>Control a 7-Segment LED</catsoop-section>
+
+For our last step of this exercise, let's connect our DIP switch to a 7-segment LED, allowing us to make numbers!
+
+### 7-Segment LED
+
+<figure class="figure">
+  <img src="CURRENT/7segment.png">
+</figure>
+
+This is a seven-segment LED, which is a display made of seven small LED segments arranged in the shape of the number 8.
+By turning different segments on or off, the display can show numbers from 0 to 9.
+
+```
+1. Make sure your power is OFF.
+2. Remove the 8 LEDs from your board, as well as one of the eight resistors. We only need seven resistors for a seven segment LED.
+3. Next to the DIP switch, connect your 7-segment LED across the center gap of the breadboard, so that one row of the 7-segment LED is sitting on one side, and the other row is on the other side.
+4. Using jumper wires, connect each pin from the empty side of the DIP switch (where the LEDs were) to one of the horizontal breadboard rows corresponding to the circled pins of the seven-segment LED. Leave the DIP switch row that doesn't have a resistor disconnected.
+```
+
+<figure class="figure">
+  <img src="CURRENT/7segment-pinout.png">
+</figure>
+
+```
+5. Connect the circled pin of the 7-segment LED to GND with a black jumper wire. 
+```
+
+<figure class="figure">
+  <img src="CURRENT/7segment-GNDpinout.png">
+</figure>
+
+```
+6. Turn power ON! You should now be able to control which of the seven segments turn on using the DIP switch, and make numbers! 
+```
+
+**If your 7-segment LED does not light:**
+- Check your power connections.
+- Check the sizes of your resistors.
+- Check that you are connecting to the correct pins of the 7-segment LED.
+- If your circuit is still not working, try to mentally and physically walk through the circuit. 
+Remember that your path should be a connected loop from 5V power source -> components -> GND of power source.
+
+Make sure you keep this setup for Exercise 1.2!
+
+<question fileupload>
+csq_prompt = "Upload a short video (30 seconds) showing your circuit working. Make sure the 7-segment LED display is clearly visible and show different segments turning on and off when you flip the DIP switches. Show us your favorite number on the 7-segment display!"
+</question>

@@ -23,7 +23,7 @@
 </div>
 
 Welcome to your first exercise in CCL's Introduction to Electronics course! 
-If you haven't already, make sure you read through the <a href="../../">course home page</a> 
+If you haven't already, make sure you read through the course <a href="../../">Home page</a> 
 to understand how the course is set up, and to see the exciting things you will get to build.
 
 By the end of this exercise, you will build your first circuit where a DIP switch controls a seven-segment LED, and each switch 
@@ -186,7 +186,7 @@ csq_explanation = "A short circuit allows large amounts of current to flow, whic
 Time to connect our LED!
 
 ```
-1. Connect one leg of the LED to the red positive rail, and the other to an empty horizontal row on the breadboard.
+1. With your power OFF, connect one leg of the LED to the red positive rail, and the other to an empty horizontal row on the breadboard.
 ```
 <question multiplechoice>
 csq_prompt = "If current should flow from the anode (long leg) to the cathode (short leg), which leg should be connected to the positive rail?"
@@ -207,7 +207,7 @@ csq_soln = 2
 ```
 **Note: The order of the LED and resistor does not matter, as long as one goes after the other in the loop**
 ```
-4. Turn your power source on. At this point, the LED should turn on! Congratulations on your first circuit!
+4. Turn your power source ON. At this point, the LED should turn on! Congratulations on your first circuit!
 ```
 
 **If your LED does not light:**
@@ -231,7 +231,7 @@ Let's do a mini experiment!
 
 ```
 1. Make sure your power is OFF.
-2. Remove your 220Ω resistor, and one at a time, test your circuit with a 270Ω and 330Ω resistor.
+2. Remove your 220Ω resistor, and one at a time, test your circuit with a 270Ω and 330Ω resistor, turning the power ON each time to see the brightness of the LED.
 ```
 
 <question multiplechoice>
@@ -360,7 +360,7 @@ By turning different segments on or off, the display can show numbers from 0 to 
 - Check the sizes of your resistors.
 - Check that you are connecting to the correct pins of the 7-segment LED.
 - If your circuit is still not working, try to mentally and physically walk through the circuit. 
-Remember that your path should be a connected loop from 5V power source -> components -> GND of power source.
+Remember that your path should be a connected loop from the 5V power source -> components -> GND of power source.
 
 Make sure you keep this setup for Exercise 1.2!
 
