@@ -19,17 +19,8 @@ cs_markdown_ignore_tags = ('script', 'svg', 'textarea')
 #  * link: the target of the link (either a URL or another list of this same form)
 cs_top_menu = [
     {'text': 'Home', 'link': 'COURSE'},
-    {'text': 'Modules', 'link': [
-                                {'text': 'Module 1', 'link': 'COURSE/modules/mod1'},
-                                {'text': 'Module 2', 'link': 'COURSE/modules/mod2'},
-                              ]},
-    {'text': 'Resources', 'link': [
-                                {'text': 'Instructors', 'link': 'COURSE/resources/instructors'},
-                                {'text': 'Circuit Reference', 'link': 'COURSE/resources/reference'},
-                                {'text': 'Foundational Concepts', 'link': 'COURSE/resources/foundations'},
-                                {'text': 'Help Channel', 'link': 'COURSE/resources/help_channels'},
-                                {'text': 'FAQs', 'link': 'COURSE/resources/faqs'},
-                              ]},
+    {'text': 'Modules', 'link': 'COURSE/modules'},
+    {'text': 'Resources', 'link': 'COURSE/resources'},
 #    {'text': 'Sample Menu', 'link': [
 #                                     {'link': 'COURSE/calendar', 'text': 'Calendar and Handouts'},
 #                                     {'link': 'COURSE/announcements', 'text': 'Archived Announcements'},
