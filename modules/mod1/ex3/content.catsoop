@@ -18,10 +18,6 @@
 </style>
 
 
-<div style="text-align: center;">
-  <h3>Simple Counting</h3>
-</div>
-
 In Exercise 1.2, you learned how to use an IC chip to display numbers on a 7-segment display. Now, we will expand our setup to use our 7-segment display as a counter going from 0 to 9!
 
 The exercises in this course build on each other with increasing levels of difficulty. Take a moment to make sure you have understood everything so far, and refer to the <a href="../../resources/">Resources page</a> if you need any help!
@@ -174,6 +170,13 @@ When the button is pressed, the two sets of pins become internally connected, al
 
 **Note: You may see that your counter occasionally skips numbers even though you click the button only once. This behavior is normal, and is known as something called *bouncing*. We will work to understand and adjust this behavior in module 2!**
 
+### Final Submission
+
 <question fileupload>
 csq_prompt = "Upload a short video (10 seconds) showing your circuit working. Make sure the 7-segment LED display is clearly visible and show it incrementing from 0-9 as you push the button."
 </question>
+
+
+---
+
+[In this module's project](COURSES/modules/mod1/project), you'll put together everything you've learned to build a cascading decade counter that lets you count from 0-99.

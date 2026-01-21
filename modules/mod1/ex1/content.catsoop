@@ -17,11 +17,6 @@
 }
 </style>
 
-
-<div style="text-align: center;">
-  <h3>The Basics</h3>
-</div>
-
 Welcome to your first exercise in CCL's Introduction to Electronics course! 
 If you haven't already, make sure you read through the course <a href="../../">Home page</a> 
 to understand how the course is set up, and to see the exciting things you will get to build.
@@ -364,6 +359,12 @@ Remember that your path should be a connected loop from the 5V power source -> c
 
 Make sure you keep this setup for Exercise 1.2!
 
+### Final Submission
 <question fileupload>
 csq_prompt = "Upload a short video (30 seconds) showing your circuit working. Make sure the 7-segment LED display is clearly visible and show different segments turning on and off when you flip the DIP switches. Show us your favorite number on the 7-segment display!"
 </question>
+
+
+---
+
+[In the next exercise](COURSES/modules/mod1/ex2), you'll learn about binary and ICs to build a circuit that displays full numbers on the 7-segment LED.
