@@ -1,7 +1,439 @@
-<catsoop-section>Capacitor</catsoop-section>
+<style>
+.figure {
+  text-align: center;
+  margin: 1rem 0;
+}
 
-<catsoop-section>RC Circuit</catsoop-section>
+.figure img {
+  max-width: 100%;
+  max-height: 500px;
+}
 
-<catsoop-section>Circuit Diagrams</catsoop-section>
+.figure figcaption {
+  font-style: italic;
+  color: #000;
+  font-size: 1rem; /* same as body text */
+  margin-top: 0.3rem;
+}
+</style>
 
-<catsoop-section>Debounce Cascading Decade Counter</catsoop-section>
+Welcome to Module 2! In Module 1, you built a cascading decade counter that counts from 0-99. You might have noticed that sometimes when you pressed the button once, the counter jumped by 2 or even 3 numbers. This wasn't a problem with your circuit – it's a real phenomenon called **button bounce**, and in this exercise, you'll learn how to fix it!
+
+By the end of this exercise, you'll understand why buttons bounce, how to visualize the problem with an LED, and how to solve it using a debounce circuit. You'll then apply this solution to make your cascading decade counter work perfectly.
+
+<div style="text-align: center;">
+  <h3>INSERT VIDEO OF BOUNCING BUTTON CAUSING COUNTER TO SKIP, THEN DEBOUNCED BUTTON WORKING SMOOTHLY</h3>
+</div>
+
+<catsoop-section>Understanding Button Bounce</catsoop-section>
+
+### What is Button Bounce?
+
+When you press a mechanical button, you might think the connection happens instantly and cleanly. In reality, the metal contacts inside the button physically bounce against each other several times before settling into a stable connection.
+
+<figure class="figure">
+  <img src="CURRENT/button_bounce_diagram.png">
+  <figcaption>Inside a button: metal contacts bounce when pressed</figcaption>
+</figure>
+
+This bouncing happens incredibly fast – usually within 5-50 milliseconds – but it's fast enough that electronic circuits can detect each bounce as a separate button press.
+
+Think of it like dropping a basketball. When the ball hits the ground, it doesn't just stick – it bounces several times before settling. Similarly, when you press a button, the internal contacts bounce several times before making stable contact.
+
+<question multiplechoice>
+csq_prompt = "If a button bounces 5 times when you press it once, how many times will a counter increment?"
+csq_options = ["1 time", "5 times", "It depends on the circuit", "It won't count at all"]
+csq_soln = "5 times"
+csq_explanation = "Each bounce creates a rising edge (LOW to HIGH transition) that the CD4026 interprets as a clock pulse, causing it to increment. So 5 bounces = 5 increments, even though you only pressed the button once."
+</question>
+
+### Why This Matters
+
+For simple circuits like turning an LED on and off, button bounce doesn't matter – the LED just flickers for a few milliseconds, which you probably won't notice.
+
+But for counting circuits, each bounce is registered as a separate count. This is why your cascading decade counter from Module 1 sometimes skipped numbers!
+
+<catsoop-section>Visualizing Button Bounce</catsoop-section>
+
+Let's see button bounce in action by building a simple circuit that makes the problem visible.
+
+### LED Bounce Detector
+
+```
+1. With your power OFF, set up a simple circuit with a button connected to an LED.
+2. Connect one leg of the button to 5V.
+3. Connect the other leg of the button to one leg of an LED (long leg/anode).
+4. Connect a 220Ω resistor from the other leg of the LED (short leg/cathode) to GND.
+5. Turn your power ON.
+```
+
+<div style="text-align: center;">
+  <h3>INSERT PHOTO OF SIMPLE BUTTON + LED CIRCUIT</h3>
+</div>
+
+```
+6. Press the button quickly and watch carefully. You might see the LED flicker very briefly as the button bounces.
+7. Try pressing the button in different ways – quickly, slowly, firmly, lightly – to see how bounce varies.
+```
+
+The flickering you see is the LED turning on and off with each bounce. It happens so fast that it's hard to see with your eyes, but your counter circuit sees every single bounce as a separate signal.
+
+<question multiplechoice>
+csq_prompt = "Why is button bounce hard to see with your eyes but easy for a counter to detect?"
+csq_options = [
+    "Human eyes are slower than electronic circuits",
+    "The LED isn't bright enough",
+    "The bounces don't actually happen",
+    "Counters are more sensitive to light"
+]
+csq_soln = "Human eyes are slower than electronic circuits"
+csq_explanation = "Human vision has a persistence time of about 100ms, while bounces happen in 5-50ms. Electronic circuits can respond in microseconds, so they 'see' each bounce clearly as a separate pulse."
+</question>
+
+<catsoop-section>The Debounce Solution: RC Circuits</catsoop-section>
+
+To fix button bounce, we need to "smooth out" the bouncing signal so that multiple bounces are treated as a single button press. We do this with an **RC circuit** – a combination of a **R**esistor and a **C**apacitor.
+
+### What is a Capacitor?
+
+<figure class="figure">
+  <img src="CURRENT/capacitors.jpg">
+  <figcaption>Different types of capacitors</figcaption>
+</figure>
+
+A capacitor is a component that stores electrical charge, similar to a tiny rechargeable battery. Unlike a battery, a capacitor charges and discharges very quickly.
+
+Think of a capacitor like a water balloon:
+- When you turn on a faucet (apply voltage), the balloon fills with water (charges up)
+- When you turn off the faucet, water slowly drains out (discharges)
+- The bigger the balloon, the more water it holds and the longer it takes to drain
+
+Capacitors are measured in **Farads** (F), but the capacitors you'll use are much smaller:
+- **Microfarads** (µF) = 10⁻⁶ F
+- **Nanofarads** (nF) = 10⁻⁹ F  
+- **Picofarads** (pF) = 10⁻¹² F
+
+<question multiplechoice>
+csq_prompt = "Which capacitor would store more charge?"
+csq_options = ["100µF capacitor", "10µF capacitor", "0.1µF capacitor", "They all store the same"]
+csq_soln = "100µF capacitor"
+csq_explanation = "Larger capacitance values mean more charge storage capacity. 100µF > 10µF > 0.1µF."
+</question>
+
+### How RC Circuits Work
+
+When you combine a resistor and capacitor, you create a circuit that takes time to charge and discharge. This time delay is exactly what we need to ignore button bounces!
+
+<figure class="figure">
+  <img src="CURRENT/rc_charging.png">
+  <figcaption>RC circuit charging curve</figcaption>
+</figure>
+
+Here's how it works:
+1. When you press the button, the capacitor starts charging through the resistor
+2. As the capacitor charges, the voltage rises gradually instead of jumping instantly
+3. Button bounces cause tiny voltage fluctuations, but the capacitor "smooths them out"
+4. By the time the voltage reaches the threshold the IC needs, the bouncing has stopped
+5. Result: the IC only sees one clean rising edge instead of multiple bouncy ones
+
+The charging time depends on the **RC time constant**:
+- **Time constant (τ) = R × C**
+- After 5τ, the capacitor is about 99% charged
+
+For example:
+- 10kΩ resistor × 10µF capacitor = 0.1 seconds = 100ms
+- After 5 × 100ms = 500ms, the capacitor is fully charged
+
+<question multiplechoice>
+csq_prompt = "If you use a 100kΩ resistor and a 1µF capacitor, what is the RC time constant?"
+csq_options = ["0.01 seconds", "0.1 seconds", "1 second", "10 seconds"]
+csq_soln = "0.1 seconds"
+csq_explanation = "τ = R × C = 100,000Ω × 0.000001F = 0.1 seconds = 100ms"
+</question>
+
+<catsoop-section>Building a Debounce Circuit</catsoop-section>
+
+Now let's build a proper debounce circuit for your button. You'll need:
+- 1 × 10kΩ resistor
+- 1 × 10µF capacitor
+
+### Electrolytic Capacitors and Polarity
+
+<figure class="figure">
+  <img src="CURRENT/electrolytic_capacitor.jpg">
+  <figcaption>Electrolytic capacitor with polarity markings</figcaption>
+</figure>
+
+The 10µF capacitor you'll use is an **electrolytic capacitor**. Unlike resistors, these capacitors have **polarity** – they must be connected in the correct direction or they can be damaged.
+
+Electrolytic capacitors have two legs:
+- **Positive leg (anode)**: Usually longer, connected to positive voltage
+- **Negative leg (cathode)**: Shorter, marked with a stripe, connected to ground
+
+<question multiplechoice>
+csq_prompt = "What happens if you connect an electrolytic capacitor backwards?"
+csq_options = [
+    "Nothing, it works fine",
+    "It can overheat, leak, or even explode",
+    "It just won't charge",
+    "It will work but slower"
+]
+csq_soln = "It can overheat, leak, or even explode"
+csq_explanation = "Electrolytic capacitors are polarized. Connecting them backwards can cause them to overheat, leak electrolyte, or in extreme cases, rupture. Always check the polarity markings!"
+</question>
+
+### Wiring the Debounce Circuit
+
+Let's add a debounce circuit to a single button that controls your counter's clock input.
+
+```
+1. With your power OFF, remove any existing button connected to your counter's clock pin (pin 1 of your first CD4026).
+2. Place your new button on the breadboard across the center gap.
+3. Connect one side of the button to GND.
+4. On the other side of the button, connect:
+   a. A 10kΩ resistor to 5V (this is called a "pull-up resistor")
+   b. The positive leg of a 10µF capacitor to this same row
+   c. A wire to the clock pin (pin 1) of your CD4026
+5. Connect the negative leg of the 10µF capacitor to GND.
+```
+
+<div style="text-align: center;">
+  <h3>INSERT PHOTO OF DEBOUNCE CIRCUIT WIRING</h3>
+</div>
+
+<div style="text-align: center;">
+  <h3>INSERT CIRCUIT DIAGRAM OF DEBOUNCE CIRCUIT</h3>
+</div>
+
+Let's understand what each component does:
+
+**Pull-up resistor (10kΩ to 5V):**
+- When the button is NOT pressed, this resistor "pulls" the voltage up to 5V (HIGH)
+- This ensures the signal is always in a known state (not "floating")
+
+**Capacitor (10µF):**
+- Smooths out voltage changes caused by button bounce
+- Creates a gradual voltage rise instead of instant jumps
+
+**Button to GND:**
+- When pressed, connects the circuit to ground
+- When released, the pull-up resistor brings voltage back to HIGH
+
+<question multiplechoice>
+csq_prompt = "In this circuit, when is the clock pin HIGH?"
+csq_options = [
+    "When the button is pressed",
+    "When the button is NOT pressed",
+    "It's always HIGH",
+    "It's always LOW"
+]
+csq_soln = "When the button is NOT pressed"
+csq_explanation = "When the button is not pressed, the pull-up resistor connects the clock pin to 5V (HIGH). When you press the button, it connects to GND (LOW). The counter increments on the rising edge when you RELEASE the button."
+</question>
+
+```
+6. Turn your power ON.
+7. Test your debounced button by pressing it multiple times. The counter should increment by exactly 1 with each press!
+```
+
+**If your counter doesn't increment or behaves strangely:**
+- Check the capacitor polarity (positive to button, negative to GND)
+- Verify the pull-up resistor connects to 5V
+- Make sure all components share the same row on the breadboard
+- Use your multimeter to check voltage at the clock pin: should be ~5V when not pressed, ~0V when pressed
+- Try pressing the button more firmly and releasing completely
+
+<catsoop-section>Understanding the Debounce Timing</catsoop-section>
+
+The values we chose (10kΩ and 10µF) give us:
+- RC time constant: 10,000Ω × 0.00001F = 0.1 seconds = 100ms
+- Full charge time: 5 × 100ms = 500ms
+
+This means it takes about 100ms for the voltage to reach the switching threshold, which is plenty of time for the bouncing to stop (bouncing typically lasts 5-50ms).
+
+### Experimenting with Different Values
+
+If you have other resistors and capacitors available, you can experiment:
+
+**Larger R or C → Slower response:**
+- 100kΩ resistor or 100µF capacitor makes the button feel "sluggish"
+- Good for very bouncy buttons, but annoying for rapid counting
+
+**Smaller R or C → Faster response:**
+- 1kΩ resistor or 1µF capacitor responds quickly
+- Might not fully eliminate bounce on cheap buttons
+
+The 10kΩ + 10µF combination is a good balance for most applications.
+
+<question multiplechoice>
+csq_prompt = "You want your debounce circuit to respond faster. Should you increase or decrease the capacitor value?"
+csq_options = [
+    "Increase (use a larger capacitor)",
+    "Decrease (use a smaller capacitor)",
+    "It doesn't matter",
+    "You should change the resistor instead"
+]
+csq_soln = "Decrease (use a smaller capacitor)"
+csq_explanation = "τ = R × C, so smaller C means smaller time constant and faster response. However, if C is too small, it won't debounce effectively!"
+</question>
+
+<catsoop-section>Debouncing Your Cascading Counter</catsoop-section>
+
+Now that you understand debouncing, let's apply it to your full cascading decade counter from Module 1's project!
+
+Your counter has multiple buttons:
+- One button for incrementing the count
+- One button for reset
+
+Let's debounce both of them.
+
+### Debouncing the Increment Button
+
+```
+1. Keep the debounce circuit you just built for the increment button connected to the first CD4026's clock pin.
+```
+
+This debounces the main counting button. Test it by counting from 0 to 20 – each press should increment by exactly 1!
+
+### Debouncing the Reset Button
+
+```
+2. Build a second debounce circuit for your reset button using the same components:
+   - 10kΩ pull-up resistor to 5V
+   - 10µF capacitor (watch polarity!)
+   - Button connected to GND
+3. Connect the debounced output to the reset pins (pin 15) of both CD4026 ICs.
+```
+
+<div style="text-align: center;">
+  <h3>INSERT PHOTO OF CASCADING COUNTER WITH BOTH BUTTONS DEBOUNCED</h3>
+</div>
+
+```
+4. Test your reset button. It should cleanly reset the display to 00 every time you press it.
+```
+
+**If the reset button triggers multiple times:**
+- Double-check capacitor polarity
+- Verify the pull-up resistor goes to 5V, not GND
+- Make sure the button connects to GND when pressed
+- The reset might be triggering on the falling edge instead of rising edge
+
+<catsoop-section>Why Pull-Up Resistors Matter</catsoop-section>
+
+You might wonder: why do we need the 10kΩ pull-up resistor at all? Can't we just connect the button between 5V and the clock pin?
+
+The pull-up resistor serves two important purposes:
+
+**1. Prevents floating inputs:**
+When the button is not pressed, without a pull-up resistor, the clock pin would be **floating** – not connected to anything. Floating inputs can randomly pick up electrical noise and trigger the circuit unexpectedly.
+
+**2. Limits current:**
+When you press the button, if one side were directly connected to 5V, pressing it would create a short circuit from 5V to GND. The resistor limits the current flow, protecting your power supply.
+
+<question multiplechoice>
+csq_prompt = "What is a 'floating input'?"
+csq_options = [
+    "An input pin connected to 5V",
+    "An input pin connected to GND",
+    "An input pin not connected to anything definite",
+    "An input pin that moves around"
+]
+csq_soln = "An input pin not connected to anything definite"
+csq_explanation = "A floating input isn't connected to a known voltage level (neither 5V nor GND). It can randomly fluctuate due to electrical noise, causing unpredictable circuit behavior. Pull-up or pull-down resistors prevent floating inputs."
+</question>
+
+<catsoop-section>Advanced: Pull-Down vs Pull-Up</catsoop-section>
+
+In this exercise, we used a **pull-up resistor** (connected to 5V), which means:
+- Normal state: HIGH
+- Pressed state: LOW
+- Counter increments on the **rising edge** when you **release** the button
+
+You could also use a **pull-down resistor** (connected to GND), which would give:
+- Normal state: LOW  
+- Pressed state: HIGH
+- Counter increments on the **rising edge** when you **press** the button
+
+<figure class="figure">
+  <img src="CURRENT/pullup_vs_pulldown.png">
+  <figcaption>Pull-up (left) vs Pull-down (right) resistor configurations</figcaption>
+</figure>
+
+Both work fine – it's just a matter of preference and what feels more natural. Pull-up is more common in digital circuits.
+
+<catsoop-section>Reading Circuit Diagrams</catsoop-section>
+
+Engineers use **circuit diagrams** (also called **schematics**) to document circuits in a standardized way. Here's how the debounce circuit looks as a schematic:
+
+<figure class="figure">
+  <img src="CURRENT/debounce_schematic.png">
+  <figcaption>Circuit diagram of button debounce circuit</figcaption>
+</figure>
+
+Common schematic symbols you should know:
+
+| Component | Symbol | Description |
+|-----------|--------|-------------|
+| Resistor | ![](CURRENT/resistor_symbol.png) | Limits current flow |
+| Capacitor | ![](CURRENT/capacitor_symbol.png) | Stores charge |
+| Button/Switch | ![](CURRENT/switch_symbol.png) | Manual on/off control |
+| Ground | ![](CURRENT/ground_symbol.png) | 0V reference point |
+| 5V/VCC | ![](CURRENT/vcc_symbol.png) | Positive power supply |
+
+Reading schematics is a crucial skill in electronics. Instead of showing the physical layout (where things go on the breadboard), schematics show the **logical connections** between components.
+
+<question multiplechoice>
+csq_prompt = "What is the main advantage of a circuit diagram over a photo of a breadboard?"
+csq_options = [
+    "It looks prettier",
+    "It shows logical connections clearly, regardless of physical layout",
+    "It's easier to build from",
+    "It shows the actual components"
+]
+csq_soln = "It shows logical connections clearly, regardless of physical layout"
+csq_explanation = "Circuit diagrams are standardized and show connections clearly without the clutter of physical layout. They're universal – engineers anywhere in the world can understand them. Photos are useful for building, but schematics are essential for understanding and documenting circuits."
+</question>
+
+<catsoop-section>Challenge: Debouncing Without a Capacitor</catsoop-section>
+
+For an extra challenge, there are other ways to debounce a button:
+
+**Hardware method:** Use a **Schmidt trigger** IC (like the 74HC14) which has built-in hysteresis to ignore small voltage fluctuations.
+
+**Software method:** If you were using a microcontroller (like Arduino), you could read the button state multiple times and only register a press if it's stable for 50ms.
+
+But the RC debounce circuit you built is simple, cheap, and works great for our counter!
+
+<catsoop-section>Recap</catsoop-section>
+
+Congratulations! You've learned:
+
+✓ Why mechanical buttons bounce and how it affects counting circuits
+
+✓ How to visualize button bounce with an LED
+
+✓ What capacitors are and how they store charge
+
+✓ How RC circuits smooth out voltage changes
+
+✓ How to calculate RC time constants
+
+✓ How to build a debounce circuit with a pull-up resistor and capacitor
+
+✓ How to read basic circuit diagrams
+
+✓ How to apply debouncing to multiple buttons
+
+Your cascading counter should now work perfectly, incrementing by exactly 1 with each button press!
+
+### Final Submission
+
+<question fileupload>
+csq_prompt = "Upload a short video (15 seconds) showing your debounced cascading decade counter. Press the increment button rapidly multiple times – the counter should increment smoothly by 1 each time. Then press the reset button to show it cleanly resets to 00."
+csq_nsubmits = None
+</question>
+
+---
+
+[In the next exercise](COURSES/modules/mod2/ex2), you'll learn about timing circuits including crystal oscillators and the 555 timer IC. You'll make your counter tick automatically like a real clock instead of requiring manual button presses!
