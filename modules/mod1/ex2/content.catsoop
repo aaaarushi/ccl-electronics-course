@@ -1,3 +1,10 @@
+<python>
+print(f"<h2>DEBUG INFO:</h2>")
+print(f"<p>Username: {cs_username}</p>")
+print(f"<p>Permissions: {cs_user_info.get('permissions', 'NONE')}</p>")
+print(f"<p>Role: {cs_user_info.get('role', 'NONE')}</p>")
+</python>
+
 <style>
 .figure {
   text-align: center;
@@ -45,9 +52,16 @@ Let's count in binary:
 <question multiplechoice>
 csq_prompt = "What is 1001 in binary equal to in decimal?"
 csq_options = ["7", "8", "9", "10"]
-csq_soln = 3
+csq_soln = "9"
 csq_explanation = "1001 in binary = 8 + 0 + 0 + 1 = 9 in decimal"
 </question>
+
+<python>
+# Debug: Check if question was registered
+import json
+namemap = globals().get('cs_defaulthandler_name_map', {})
+print(f"<p>Questions found: {list(namemap.keys())}</p>")
+</python>
 
 ### Place Values in Binary
 
@@ -76,14 +90,14 @@ Example: 1001 in binary
 <question multiplechoice>
 csq_prompt = "What is 0110 in binary equal to in decimal?"
 csq_options = ["3", "4", "5", "6"]
-csq_soln = 4
+csq_soln = "6"
 csq_explanation = "0110 = (0×8) + (1×4) + (1×2) + (0×1) = 0 + 4 + 2 + 0 = 6"
 </question>
 
 <question multiplechoice>
 csq_prompt = "What is 1111 in binary equal to in decimal?"
 csq_options = ["14", "15", "16", "17"]
-csq_soln = 2
+csq_soln = "15"
 csq_explanation = "1111 = (1×8) + (1×4) + (1×2) + (1×1) = 8 + 4 + 2 + 1 = 15. This is the largest number you can represent with 4 binary digits."
 </question>
 
@@ -114,7 +128,6 @@ When reading a binary number off the DIP switch, ignore the 1 through 8 numberin
 csq_prompt = 'What BINARY number is represented by the DIP switch above? '
 csq_soln = 11110001
 csq_check_function = lambda sub, sol: int(sub) == sol
-csq_size = 20 # width of text box
 csq_explanation = "The switches are ON, ON, ON, ON, OFF, OFF, OFF, ON corresponding to 11110001"
 </question>
 
@@ -122,7 +135,6 @@ csq_explanation = "The switches are ON, ON, ON, ON, OFF, OFF, OFF, ON correspond
 csq_prompt = 'What DECIMAL number is represented by the DIP switch above? '
 csq_soln = 241
 csq_check_function = lambda sub, sol: int(sub) == sol
-csq_size = 10 # width of text box
 csq_explanation = "11110001 = 128 + 64 + 32 + 16 + 0 + 0 + 0 + 1 = 241"
 </question>
 
@@ -130,7 +142,6 @@ csq_explanation = "11110001 = 128 + 64 + 32 + 16 + 0 + 0 + 0 + 1 = 241"
 csq_prompt = 'What is the largest DECIMAL number we can represent with an 8-bit DIP switch? '
 csq_soln = 255
 csq_check_function = lambda sub, sol: int(sub) == sol
-csq_size = 10 # width of text box
 </question>
 
 <question multiplechoice>
@@ -149,27 +160,27 @@ csq_explanation = "The largest number that can be represented with a limited num
 You can practice setting numbers on your DIP switch with your circuit from Exercise 1.1. Note that your switches are still controlling arbitrary segments on your 7-segment display, so the number you are inputting will NOT match the shape displayed!
 ```
 1. Set all switches to OFF. This represents 00000000 = 0.
-2. Turn ON only the rightmost switch (the "1" position). This represents 00000001 = 1.
-3. Turn ON only the switch labeled "2". This represents 00000010 = 2.
-4. Turn ON the "2" and "1" switches. This represents 00000011 = 3.
+2. Turn ON only the rightmost switch 8 (the ones position). This represents 00000001 = 1.
+3. Turn ON only the switch labeled 7 (the twos position). This represents 00000010 = 2.
+4. Turn ON switches 7 and 8. This represents 00000011 = 3.
 ```
 
 <question multiplechoice>
 csq_prompt = "Which switches should be ON to represent the decimal number 5?"
 csq_options = [
-    "8 and 1",
-    "4 and 1", 
-    "8 and 4",
-    "2 and 1"
+    "5 and 8",
+    "6 and 8", 
+    "5 and 6",
+    "7 and 8"
 ]
-csq_soln = 2
+csq_soln = "6 and 8"
 csq_explanation = "5 in binary is 0101 = (0×8) + (1×4) + (0×2) + (1×1) = 4 + 1 = 5"
 </question>
 
 <question multiplechoice>
 csq_prompt = "If the switches labeled 5, 6, and 7 are ON, what decimal number does this represent?"
 csq_options = ["112", "111", "14", "567"]
-csq_soln = 3
+csq_soln = "14"
 csq_explanation = "00001110 in binary = 0 + 0 + 0 + 0 + 8 + 4 + 2 + 0 = 14"
 </question>
 
@@ -205,22 +216,22 @@ Important: Always place IC chips straddling the center gap so the two rows of pi
 
 For the 74LS48:
 - Pin 8: GND (ground)
-- Pin 16: Vcc (power, +5V)
+- Pin 16: VCC (power, +5V)
 - Pins 7, 1, 2, 6: Inputs (A, B, C, D) - these receive your 4-bit binary number
 - Pins 9-15: Outputs (a, b, c, d, e, f, g) - these connect to the 7-segment display
 
-Rule of thumb: Almost all DIP IC chips have power (Vcc) on pin 16 and ground (GND) on pin 8. Always connect these first!
+Rule of thumb: Almost all DIP IC chips have power (VCC) on pin 16 and ground (GND) on pin 8. Always connect these first!
 
 <question multiplechoice>
 csq_prompt = "Before connecting any inputs or outputs, which two pins should you ALWAYS connect first on any IC?"
 csq_options = [
     "Pin 1 and Pin 2",
-    "Vcc and GND",
+    "VCC and GND",
     "The input pins",
     "The output pins"
 ]
-csq_soln = 2
-csq_explanation = "Always connect power (Vcc) and ground (GND) first. Without power, the chip cannot function. This also prevents damage from connecting signals before power."
+csq_soln = "VCC and GND"
+csq_explanation = "Always connect power (VCC) and ground (GND) first. Without power, the chip cannot function. This also prevents damage from connecting signals before power."
 </question>
 
 <catsoop-section>Wiring the 74LS48 IC</catsoop-section>
@@ -244,12 +255,12 @@ csq_options = [
     "It doesn't matter where you place it",
     "To save space"
 ]
-csq_soln = 2
+csq_soln = "To prevent the two rows of pins from shorting together"
 csq_explanation = "If both rows of pins were in the same section, they would be electrically connected through the breadboard's internal connections, causing a short circuit and damaging the IC."
 </question>
 
 ```
-4. Using a jumper wire, connect the Vcc IC pin to the power rail.
+4. Using a jumper wire, connect the VCC IC pin to the power rail.
 5. Using a jumper wire, connect the GND IC pin to the ground rail.
 ```
 
@@ -292,42 +303,42 @@ Now check your circuit:
 <question multiplechoice>
 csq_prompt = 'Switch 1 is connected to IC pin '
 csq_options = list(range(1, 17)) + ["None"]
-csq_soln = 16
+csq_soln = "None"
 </question>
 <question multiplechoice>
 csq_prompt = 'Switch 2 is connected to IC pin '
 csq_options = list(range(1, 17)) + ["None"]
-csq_soln = 16
+csq_soln = "None"
 </question>
 <question multiplechoice>
 csq_prompt = 'Switch 3 is connected to IC pin '
 csq_options = list(range(1, 17)) + ["None"]
-csq_soln = 16
+csq_soln = "None"
 </question>
 <question multiplechoice>
 csq_prompt = 'Switch 4 is connected to IC pin '
 csq_options = list(range(1, 17)) + ["None"]
-csq_soln = 16
+csq_soln = "None"
 </question>
 <question multiplechoice>
 csq_prompt = 'Switch 5 is connected to IC pin '
 csq_options = list(range(1, 17)) + ["None"]
-csq_soln = 5
+csq_soln = 6
 </question>
 <question multiplechoice>
 csq_prompt = 'Switch 6 is connected to IC pin '
 csq_options = list(range(1, 17)) + ["None"]
-csq_soln = 1
+csq_soln = 2
 </question>
 <question multiplechoice>
 csq_prompt = 'Switch 7 is connected to IC pin '
 csq_options = list(range(1, 17)) + ["None"]
-csq_soln = 0
+csq_soln = 1
 </question>
 <question multiplechoice>
 csq_prompt = 'Switch 8 is connected to IC pin '
 csq_options = list(range(1, 17)) + ["None"]
-csq_soln = 6
+csq_soln = 7
 </question>
 
 Why this order? The 74LS48 IC labels A as the least significant bit (LSB) and D as the most significant bit (MSB). We want switch 8 to control the 1's place, so it goes to input A.
@@ -340,7 +351,7 @@ csq_options = [
     "Switch 7",
     "Switch 8"
 ]
-csq_soln = 0
+csq_soln = "Switch 5"
 csq_explanation = "Binary 1000 has only the most significant bit set, which is the 8's place (input D on pin 6)."
 </question>
 
@@ -366,7 +377,7 @@ csq_options = [
     "The IC will be damaged",
     "Only segment 'a' will work"
 ]
-csq_soln = 2
+csq_soln = "Nothing - no segments will light up"
 csq_explanation = "LEDs need a complete circuit. Without the cathode connected to ground, there's no return path for current, so no segments can light up."
 </question>
 
@@ -415,7 +426,7 @@ csq_options = [
     "5, 6, 7, 8",
     "6, 7"
 ]
-csq_soln = 2
+csq_soln = "6, 7, 8"
 csq_explanation = "7 in binary = 0111 = 4 + 2 + 1. Turn ON the three right-most switches."
 </question>
 
@@ -431,7 +442,7 @@ csq_options = [
     "Nothing at all",
     "It shows 0"
 ]
-csq_soln = 2
+csq_soln = "A weird pattern that isn't 0-9"
 csq_explanation = "The 74LS48N is designed to show digits 0-9. For inputs 10-15, it displays patterns that aren't standard numbers. This is normal behavior."
 </question>
 
@@ -453,7 +464,7 @@ Let's verify the IC is receiving power correctly.
 1. Set your multimeter to DC voltage mode (V⎓).
 2. Turn your power ON.
 3. Place the black probe on pin 8 (GND).
-4. Place the red probe on pin 16 (Vcc).
+4. Place the red probe on pin 16 (VCC).
 5. You should read approximately 5V. If not, check your power connections.
 ```
 
@@ -465,7 +476,7 @@ csq_options = [
     "Your multimeter is broken",
     "This is normal"
 ]
-csq_soln = 2
+csq_soln = "Pin 16 is not connected to the positive rail"
 csq_explanation = "0V means pin 16 is not receiving power. Check that your jumper wire goes from pin 16 to the red positive rail, and that the rail is connected to your power supply."
 </question>
 
@@ -488,7 +499,7 @@ csq_options = [
     "The display is upside down",
     "The resistors are too small"
 ]
-csq_soln = 2
+csq_soln = "The inputs are connected in the wrong order"
 csq_explanation = "Binary 0011 (3) and 0101 (5) differ in the 2nd and 3rd bits. If inputs B and C are swapped, input 0011 would be read as 0101. Check your input wiring order!"
 </question>
 
@@ -522,7 +533,7 @@ The only difference is they might have more bits (to show bigger numbers) or use
 <question multiplechoice>
 csq_prompt = "If you wanted to display numbers from 0 to 1023, how many binary bits would you need?"
 csq_options = ["4 bits", "6 bits", "8 bits", "10 bits"]
-csq_soln = 4
+csq_soln = "10 bits"
 csq_explanation = "10 bits can represent 28 = 1024 different values (0-1023). Each additional bit doubles the range."
 </question>
 
@@ -533,6 +544,7 @@ A truth table shows all possible inputs and their corresponding outputs. Let's c
 <question smallbox>
 csq_prompt = "Set your switches to binary 0110 (decimal 6). Which segments should be lit? List them as letters separated by commas (e.g., a,b,c)."
 csq_soln = ["a,b,c,d,e,g", "abcdeg", "a, b, c, d, e, g"]
+csq_check_function = lambda sub, sol: sub in sol
 csq_explanation = "The digit 6 on a 7-segment display uses all segments except f."
 </question>
 
@@ -555,7 +567,7 @@ Congratulations! You've learned:
 
 ✓ What an IC chip is and how to read a pinout diagram
 
-✓ How to properly power an IC (Vcc and GND first!)
+✓ How to properly power an IC (VCC and GND first!)
 
 ✓ How to connect inputs and outputs to an IC
 
@@ -579,6 +591,7 @@ Want to experiment more? Try these challenges:
 
 <question fileupload>
 csq_prompt = "Upload a short video (30 seconds) showing your circuit working. Make sure the 7-segment LED display is clearly visible and show the right segments turning on and off when you input a binary number on the DIP switches."
+csq_nsubmits = None
 </question>
 
 ---

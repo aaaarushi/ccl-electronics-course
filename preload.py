@@ -21,6 +21,8 @@ cs_top_menu = [
     {'text': 'Home', 'link': 'COURSE'},
     {'text': 'Modules', 'link': 'COURSE/modules'},
     {'text': 'Resources', 'link': 'COURSE/resources'},
+    {'text': 'TEST', 'link': 'COURSE/questions'},
+    {'text': 'Progress', 'link': 'COURSE/modules/progress'}
 #    {'text': 'Sample Menu', 'link': [
 #                                     {'link': 'COURSE/calendar', 'text': 'Calendar and Handouts'},
 #                                     {'link': 'COURSE/announcements', 'text': 'Archived Announcements'},
@@ -37,6 +39,9 @@ cs_top_menu = [
 # AUTHENTICATION
 
 cs_auth_type='login'  # use the default (username/password based) authentication method
+cs_allow_registration = True
+cs_require_confirm_email = True  # no email confirmation needed
+
 # for actually running a course at MIT, I like using OpenID Connect instead (https://oidc.mit.edu/).
 
 # custom XML tag handling, copied from one i wrote for 6.01 ages ago.  can
@@ -102,7 +107,7 @@ csq_python_sandbox = "python"
 #  whdw: allowed to see "WHDW" page (Who Has Done What)
 #  email: allowed to send e-mail through CAT-SOOP
 #  grade: allowed to submit grades
-cs_default_role = 'Guest'
+cs_default_role = 'Student'
 cs_permissions = {'Admin': ['view_all', 'submit_all', 'impersonate', 'admin', 'whdw', 'email', 'grade'],
                'Instructor': ['view_all', 'submit_all', 'impersonate', 'admin', 'whdw', 'email', 'grade'],
                'TA': ['view_all', 'submit_all', 'impersonate', 'whdw', 'email', 'grade'],
@@ -160,3 +165,15 @@ def cs_post_load(context):
         context['cs_footer'] = 'This page was last updated on %s (revision <code>%s</code>).<br/>&nbsp;<br/>' % (t, h.decode())
     except:
         pass
+
+# Debug authentication
+original_cs_post_load = cs_post_load if 'cs_post_load' in dir() else lambda c: None
+
+def cs_post_load(context):
+    original_cs_post_load(context)
+    
+    # Debug info
+    if 'loginaction' in context.get('cs_form', {}):
+        print(f"DEBUG: Login action = {context['cs_form']['loginaction']}")
+        print(f"DEBUG: Self-registration = {context.get('cs_allow_self_registration', False)}")
+        print(f"DEBUG: Auth type = {context.get('cs_auth_type', 'NONE')}")
