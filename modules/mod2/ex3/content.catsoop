@@ -1,3 +1,595 @@
-<catsoop-section>Diode Reset</catsoop-section>
+<style>
+.figure {
+  text-align: center;
+  margin: 1rem 0;
+}
 
-<catsoop-section>Gate Reset</catsoop-section>
+.figure img {
+  max-width: 100%;
+  max-height: 500px;
+}
+
+.figure figcaption {
+  font-style: italic;
+  color: #000;
+  font-size: 1rem; /* same as body text */
+  margin-top: 0.3rem;
+}
+</style>
+
+In Exercise 2.2, you learned how to make your counter tick automatically using timing circuits. Now you have a counter that goes 0, 1, 2, 3... all the way up to 99 before rolling over. But for a real clock, we need the seconds to reset at 60 (not 99), the minutes to reset at 60, and the hours to reset at 12 (not 99).
+
+In this exercise, you'll learn multiple methods for resetting counters at specific values. By the end, you'll understand the techniques needed to build a proper digital clock that displays time in the format we're all familiar with!
+
+<div style="text-align: center;">
+  <h3>INSERT VIDEO OF COUNTER RESETTING AT 60 INSTEAD OF 99</h3>
+</div>
+
+<catsoop-section>Review: The Reset Pin</catsoop-section>
+
+Let's review what you learned about the CD4026's reset functionality in Module 1.
+
+Looking back at the CD4026 pinout:
+
+<figure class="figure">
+  <img src="CURRENT/cd4026_pinout.png">
+  <figcaption>CD4026 pinout with reset pin highlighted</figcaption>
+</figure>
+
+**Pin 15 (Reset):**
+- When LOW (connected to GND): Counter operates normally
+- When HIGH (5V): Counter immediately resets to 0
+- Must be kept LOW for normal operation
+
+<question multiplechoice>
+csq_prompt = "What happens if you leave the reset pin (pin 15) floating (not connected to anything)?"
+csq_options = [
+    "The counter works normally",
+    "The counter might randomly reset due to electrical noise",
+    "The counter stays at 0 forever",
+    "Nothing happens"
+]
+csq_soln = "The counter might randomly reset due to electrical noise"
+csq_explanation = "Floating inputs can pick up electrical noise and randomly go HIGH or LOW. For reliable operation, reset pins must be connected to a known voltage level – either LOW (through a resistor to GND) or HIGH (to VCC) depending on what you want."
+</question>
+
+### Manual Reset Button (Review)
+
+In Module 1's project, you built a reset button for your cascading counter. Let's review how it worked:
+
+```
+- Button connects between 5V and reset pin
+- When pressed: reset pin goes HIGH → counter resets to 0
+- When released: reset pin returns to LOW → counter can count again
+```
+
+This manual reset is useful for setting the time, but for automatic resets (like at 60 seconds), we need the counter to reset itself based on its displayed value.
+
+<catsoop-section>The Challenge: Automatic Reset at Specific Values</catsoop-section>
+
+For a digital clock, we need:
+- **Seconds:** Count 00 → 59, then reset to 00 (reset at 60)
+- **Minutes:** Count 00 → 59, then reset to 00 (reset at 60)
+- **Hours:** Count 00 → 11, then reset to 00 (reset at 12)
+
+The key question: **How can we detect when the counter reaches a specific value and automatically trigger a reset?**
+
+There are two main approaches:
+1. **Diode reset method** – Uses the segment outputs and diodes
+2. **Logic gate reset method** – Uses logic ICs to detect specific counts
+
+Let's explore both!
+
+<catsoop-section>Method 1: Diode Reset Circuit</catsoop-section>
+
+You've actually already used this method! In Module 1's project, you used Zener diodes to reset the tens digit of seconds at 6. Let's understand this method more deeply.
+
+### Understanding the Concept
+
+The CD4026 has a special property: if the reset pin (pin 15) is left **open** (not connected to LOW), the IC resets to 0 automatically.
+
+We can use this property cleverly:
+- Keep the reset pin connected to GND through **reverse-biased diodes**
+- The diodes are connected to specific segment outputs
+- When ALL those segments are HIGH simultaneously, the diodes block the path to GND
+- The reset pin becomes "open" → automatic reset!
+
+### Why This Works for Digit 6
+
+Let's look at which segments light up for each digit:
+
+<figure class="figure">
+  <img src="CURRENT/seven_segment_digits.png">
+  <figcaption>Which segments light up for each digit 0-9</figcaption>
+</figure>
+
+| Digit | a | b | c | d | e | f | g |
+|-------|---|---|---|---|---|---|---|
+| 0 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✗ |
+| 1 | ✗ | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ |
+| 2 | ✓ | ✓ | ✗ | ✓ | ✓ | ✗ | ✓ |
+| 3 | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✓ |
+| 4 | ✗ | ✓ | ✓ | ✗ | ✗ | ✓ | ✓ |
+| 5 | ✓ | ✗ | ✓ | ✓ | ✗ | ✓ | ✓ |
+| 6 | ✓ | ✗ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| 7 | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ |
+| 8 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| 9 | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ |
+
+Look at segments **e, f, and g**. Which digit is the ONLY one where all three are HIGH?
+
+<question multiplechoice>
+csq_prompt = "Which digit is the only one where segments e, f, AND g are all HIGH at the same time?"
+csq_options = ["0", "5", "6", "8", "9"]
+csq_soln = "6"
+csq_explanation = "Looking at the table, only digit 6 has all three segments e, f, and g lit up simultaneously. Digit 8 has all segments lit, but that's not useful for our purpose. Digit 6 is perfect for detecting 'reset at 6'."
+</question>
+
+This is why the diode method works perfectly for resetting at 6!
+
+### Building a Diode Reset for Digit 6
+
+Let's build this circuit step by step. You'll need:
+- 3 × 1N4148 diodes (or similar small signal diodes)
+- 1 × 10kΩ resistor
+
+<figure class="figure">
+  <img src="CURRENT/diode_types.jpg">
+  <figcaption>1N4148 diodes</figcaption>
+</figure>
+
+**Understanding diodes:**
+- Diodes allow current to flow in only one direction
+- The side with a black band is the **cathode** (negative)
+- The other side is the **anode** (positive)
+- Current flows from anode to cathode
+
+<figure class="figure">
+  <img src="CURRENT/diode_symbol.png">
+  <figcaption>Diode symbol and physical marking</figcaption>
+</figure>
+
+```
+1. With power OFF, locate one of your CD4026 ICs that you want to reset at 6 (this would be the tens digit of seconds or minutes).
+2. Currently, pin 15 (Reset) should be connected to GND. Remove that connection.
+3. Connect three 1N4148 diodes in parallel:
+   - All three cathodes (black band end) connect together to pin 15 (Reset)
+   - First diode anode connects to segment e output (pin 14)
+   - Second diode anode connects to segment f output (pin 10)
+   - Third diode anode connects to segment g output (pin 15)
+4. Connect a 10kΩ resistor from pin 15 (Reset) to GND.
+```
+
+<div style="text-align: center;">
+  <h3>INSERT PHOTO OF DIODE RESET CIRCUIT ON BREADBOARD</h3>
+</div>
+
+<div style="text-align: center;">
+  <h3>INSERT CIRCUIT DIAGRAM OF DIODE RESET METHOD</h3>
+</div>
+
+**How this circuit works:**
+
+When the counter displays 0-5:
+- At least one of segments e, f, or g is OFF (LOW)
+- That LOW segment output pulls current through its diode
+- Current flows through the 10kΩ resistor to GND
+- The reset pin stays LOW → counter operates normally
+
+When the counter displays 6:
+- ALL three segments e, f, and g are HIGH
+- All three diodes are reverse-biased (cathode more positive than anode)
+- No current flows through the diodes
+- The reset pin is no longer pulled to GND → it goes HIGH
+- Counter resets to 0!
+
+```
+5. Turn power ON and let your counter count.
+6. Watch carefully as it approaches 6. It should reset to 0 just as it tries to display 6!
+```
+
+You might see a very brief flash of the number 6 before it resets – this is normal and happens too quickly to matter.
+
+<question multiplechoice>
+csq_prompt = "Why do we need the 10kΩ resistor to GND in this circuit?"
+csq_options = [
+    "To limit current through the diodes",
+    "To pull the reset pin LOW when at least one segment is OFF",
+    "To protect the CD4026 from damage",
+    "We don't actually need it"
+]
+csq_soln = "To pull the reset pin LOW when at least one segment is OFF"
+csq_explanation = "The resistor provides a path to GND through whichever diode has a LOW segment. This keeps the reset pin LOW during normal counting (0-5). Without it, the reset pin would float when segments are LOW, causing unpredictable behavior."
+</question>
+
+### Limitations of the Diode Method
+
+The diode reset method is clever and uses minimal components, but it has limitations:
+
+**It only works for specific numbers:**
+- Easy for 6 (segments e, f, g)
+- Easy for 8 (all segments)
+- Hard or impossible for other numbers
+
+**For resetting at 60 or 12, we need a different approach!**
+
+<catsoop-section>Method 2: Logic Gate Reset Circuit</catsoop-section>
+
+For more complex reset conditions (like at 60 or 12), we need to use **logic gates** to detect specific multi-digit values.
+
+### What are Logic Gates?
+
+Logic gates are the fundamental building blocks of digital circuits. They perform basic logical operations on binary inputs (HIGH/LOW) and produce binary outputs.
+
+The main logic gates you should know:
+
+<figure class="figure">
+  <img src="CURRENT/logic_gates.png">
+  <figcaption>Common logic gate symbols and truth tables</figcaption>
+</figure>
+
+**AND gate:**
+- Output is HIGH only if ALL inputs are HIGH
+- Truth table: 0·0=0, 0·1=0, 1·0=0, 1·1=1
+
+**OR gate:**
+- Output is HIGH if ANY input is HIGH
+- Truth table: 0+0=0, 0+1=1, 1+0=1, 1+1=1
+
+**NOT gate (inverter):**
+- Output is opposite of input
+- Truth table: NOT 0 = 1, NOT 1 = 0
+
+**NAND gate:**
+- NOT AND – output is LOW only if ALL inputs are HIGH
+- Truth table: Opposite of AND
+
+**NOR gate:**
+- NOT OR – output is HIGH only if ALL inputs are LOW
+- Truth table: Opposite of OR
+
+<question multiplechoice>
+csq_prompt = "What is the output of an AND gate when one input is HIGH and one input is LOW?"
+csq_options = ["HIGH", "LOW", "Floating", "It depends"]
+csq_soln = "LOW"
+csq_explanation = "AND gates output HIGH only when ALL inputs are HIGH. If any input is LOW, the output is LOW. Think of it like a series circuit – all switches must be closed for current to flow."
+</question>
+
+### The 74LS00 NAND Gate IC
+
+For our reset circuit, we'll use the **74LS00** quad 2-input NAND gate IC.
+
+<figure class="figure">
+  <img src="CURRENT/74ls00_ic.jpg">
+  <figcaption>74LS00 NAND gate IC</figcaption>
+</figure>
+
+**"Quad 2-input" means:**
+- **Quad:** Contains 4 independent gates
+- **2-input:** Each gate has 2 inputs
+
+<figure class="figure">
+  <img src="CURRENT/74ls00_pinout.png">
+  <figcaption>74LS00 pinout diagram</figcaption>
+</figure>
+
+**Pin connections:**
+- **Pin 14:** VCC (5V)
+- **Pin 7:** GND
+- **Pins 1-6, 8-13:** Four separate NAND gates with their inputs/outputs
+
+Each NAND gate takes two inputs and produces one output.
+
+### Detecting "12" for Hour Reset
+
+Let's design a circuit to reset at 12 hours. We need to detect when the display shows "12" – that is:
+- Tens digit = 1
+- Units digit = 2
+
+**Step 1: Understand what "1" and "2" mean in segment form**
+
+For the tens digit to show "1":
+- Segments b and c are HIGH
+- All other segments are LOW
+
+For the units digit to show "2":
+- Segments a, b, d, e, g are HIGH
+- Segments c and f are LOW
+
+**Step 2: Detect "1" on tens digit**
+
+We need to detect when segments b AND c are HIGH. This is perfect for an AND gate!
+
+But wait – the 74LS00 has NAND gates, not AND gates. No problem! We can convert NAND to AND by adding an inverter:
+- NAND(A, B) → NOT gate → gives us AND(A, B)
+
+Or we can use the property that NAND(NAND(A,B), NAND(A,B)) = AND(A,B).
+
+**Step 3: Detect "2" on units digit**
+
+Detecting "2" is more complex because we need to check multiple segments. 
+
+Actually, there's a cleverer approach: Since we're using CD4026 counters, we can look at the segment that's unique for "2" compared to other digits we care about.
+
+Looking at our application:
+- We want to reset when tens="1" AND units="2"
+- We can detect tens="1" by checking segments b and c
+- We can detect units="2" by checking segment a AND segment g (both HIGH only at 2 in this context)
+
+**Practical approach for this module's project:**
+
+The exact logic circuit gets complex. In the project, you'll see a simplified approach shown in the reference material that uses:
+- Segment outputs from the hour digits
+- NAND gates to combine the conditions
+- A final output that goes HIGH only at "12"
+
+<figure class="figure">
+  <img src="CURRENT/reset_at_12_logic.png">
+  <figcaption>Logic circuit for detecting and resetting at 12</figcaption>
+</figure>
+
+<catsoop-section>Building a Simple Logic Gate Circuit</catsoop-section>
+
+Let's practice using logic gates with a simpler example first. We'll build a circuit that lights an LED only when TWO buttons are both pressed – a classic AND gate application.
+
+### Two-Button AND Circuit
+
+```
+1. With power OFF, place a 74LS00 IC on your breadboard straddling the center gap.
+2. Connect power:
+   - Pin 14 (VCC) → 5V
+   - Pin 7 (GND) → GND
+3. Set up two buttons:
+   - Button A: one side to 5V, other side to pin 1 (input A)
+   - Connect a 10kΩ pull-down resistor from pin 1 to GND
+   - Button B: one side to 5V, other side to pin 2 (input B)
+   - Connect a 10kΩ pull-down resistor from pin 2 to GND
+4. Connect pin 3 (NAND output) to pin 4 (input of second NAND gate)
+5. Connect pin 5 to pin 4 as well (both inputs of second NAND are the same)
+6. Connect pin 6 (output) to an LED with 220Ω resistor to GND
+```
+
+<div style="text-align: center;">
+  <h3>INSERT PHOTO OF TWO-BUTTON AND GATE CIRCUIT</h3>
+</div>
+
+<div style="text-align: center;">
+  <h3>INSERT CIRCUIT DIAGRAM OF TWO-BUTTON AND GATE</h3>
+</div>
+
+This circuit implements: AND(A,B) = NOT(NAND(A,B))
+
+```
+7. Turn power ON and test:
+   - No buttons pressed: LED OFF
+   - Button A only: LED OFF
+   - Button B only: LED OFF
+   - Both buttons: LED ON
+```
+
+This is an AND gate – output is HIGH only when BOTH inputs are HIGH!
+
+<question multiplechoice>
+csq_prompt = "If you wanted an LED that lights up when EITHER button is pressed, which gate would you use?"
+csq_options = ["AND gate", "OR gate", "NOT gate", "NAND gate"]
+csq_soln = "OR gate"
+csq_explanation = "OR gates output HIGH when ANY input is HIGH. This means pressing either button (or both) would light the LED. AND gates require ALL inputs HIGH, so only pressing both buttons would work."
+</question>
+
+### Understanding Truth Tables
+
+Let's verify our circuit with a truth table:
+
+**NAND gate (pins 1,2 → 3):**
+| Button A | Button B | Pin 1 | Pin 2 | Pin 3 (NAND) |
+|----------|----------|-------|-------|--------------|
+| Not pressed | Not pressed | 0 | 0 | 1 |
+| Not pressed | Pressed | 0 | 1 | 1 |
+| Pressed | Not pressed | 1 | 0 | 1 |
+| Pressed | Pressed | 1 | 1 | 0 |
+
+**NOT gate (pins 4,5 → 6):**
+| Pin 3 | Pin 4 | Pin 5 | Pin 6 (NOT of pin 3) |
+|-------|-------|-------|----------------------|
+| 1 | 1 | 1 | 0 |
+| 1 | 1 | 1 | 0 |
+| 1 | 1 | 1 | 0 |
+| 0 | 0 | 0 | 1 |
+
+**Result:** LED (pin 6) is HIGH only when both buttons are pressed – perfect AND behavior!
+
+<catsoop-section>Practical Reset Circuits for Clocks</catsoop-section>
+
+Now let's discuss practical reset circuits for your digital clock:
+
+### Reset at 60 (Seconds and Minutes)
+
+To reset at 60, we need to detect:
+- Tens digit = 6
+- Units digit = 0
+
+**Option 1: Detect when it reaches 60 momentarily**
+- Use diode reset on tens digit (detects 6)
+- This automatically happens when units rolls over from 9→0
+- The carry pulse triggers tens to go 5→6
+- Diodes detect 6 and reset both digits to 00
+
+**Option 2: Use the carry-out signal**
+- When units digit reaches 9 and gets another pulse, it goes to 0 and carry-out goes HIGH
+- When tens digit is 5 and receives this carry, it goes to 6
+- Detect tens=6 with diodes → reset both digits
+
+**Implementation:**
+```
+1. Use diode reset method (e, f, g segments) on the tens digit
+2. Connect the reset output to BOTH the tens digit reset pin AND the units digit reset pin
+3. When tens digit reaches 6, both digits reset to 00 simultaneously
+```
+
+<div style="text-align: center;">
+  <h3>INSERT DIAGRAM OF RESET AT 60 CIRCUIT</h3>
+</div>
+
+### Reset at 12 (Hours)
+
+Resetting at 12 requires detecting a two-digit value where neither digit is 6 or 8 (which have unique segment patterns).
+
+**Approach from the reference material:**
+
+The project guide shows using NAND gates to detect specific segment combinations:
+- Segment "a" from tens place (HIGH only at 1)
+- Segment "g" from units place (unique pattern for 2)
+- Combining these with NAND logic
+
+The detailed circuit is shown in the project document and involves:
+1. Using 3 NAND gates from the 74LS00 IC
+2. Detecting the specific segment pattern for "12"
+3. Outputting a HIGH pulse when "12" is detected
+4. Using this pulse to reset both hour digits
+
+<catsoop-section>Alternative Method: Using Paper Clips</catsoop-section>
+
+Here's a creative, low-tech solution that's sometimes used in student projects:
+
+**Paper clip jumpers:**
+Instead of diodes or logic gates, you can manually connect reset pins to specific segments using paper clips or jumper wires to create the exact reset condition you need.
+
+<figure class="figure">
+  <img src="CURRENT/paperclip_jumpers.jpg">
+  <figcaption>Paper clips used as temporary connections</figcaption>
+</figure>
+
+**Advantages:**
+- No additional components needed
+- Easy to experiment and adjust
+- Good for prototyping
+
+**Disadvantages:**
+- Not reliable for permanent circuits
+- Can create shorts if not careful
+- Difficult to troubleshoot
+
+This method is mentioned because in the project reference, alternative creative solutions are encouraged!
+
+<catsoop-section>Using Push Pins for IC Reset Control</catsoop-section>
+
+Another practical technique: Use push pins or small toggle switches to manually control reset pins during testing.
+
+```
+1. Connect a push pin between VCC and each reset pin
+2. Press to reset that digit manually
+3. Helps with debugging and time-setting
+```
+
+This gives you manual override capability while developing the automatic reset circuits.
+
+<catsoop-section>Comparing Reset Methods</catsoop-section>
+
+Let's compare all the reset methods we've learned:
+
+| Method | Best For | Components | Difficulty | Reliability |
+|--------|----------|------------|------------|-------------|
+| Manual button | User control | Button, resistor | Easy | Very reliable |
+| Diode reset | Single digit (6,8) | 3 diodes, resistor | Moderate | Reliable |
+| Logic gates | Any value (12, 24, etc) | Logic IC, resistors | Advanced | Very reliable |
+| Paper clips | Prototyping | None (jumpers) | Easy | Not reliable |
+| Push pins | Testing/debugging | Push pins/switches | Easy | Moderate |
+
+For your final clock project, you'll use:
+- **Diode reset** for resetting seconds/minutes at 6 (tens digit)
+- **Logic gate reset** for resetting hours at 12
+- **Manual buttons** for setting the time
+
+<catsoop-section>Testing Your Reset Circuit</catsoop-section>
+
+Here's how to test a reset circuit properly:
+
+```
+1. Build the reset circuit with power OFF
+2. Connect your multimeter to measure the reset pin voltage
+3. Turn power ON
+4. Manually advance the counter using a button on the clock input
+5. Watch the multimeter as the counter approaches your reset value
+6. The reset pin should:
+   - Stay LOW (near 0V) for all values before reset point
+   - Go HIGH (near 5V) at the reset value
+   - Return to LOW immediately after reset
+7. Verify the display resets correctly and counting continues
+```
+
+**Common issues:**
+
+If reset happens too early:
+- Check diode orientations (cathodes should all connect to reset pin)
+- Verify you're detecting the right segments
+- Make sure pull-down resistor is connected
+
+If reset doesn't happen:
+- Check all diodes are properly connected
+- Verify segments are going HIGH when expected
+- Test voltage on each segment at the reset value
+- Try a different CD4026 IC
+
+If reset is erratic:
+- Add a small capacitor (0.01µF) across the reset pin to GND to debounce
+- Check for loose connections
+- Verify power supply is stable
+
+<catsoop-section>Advanced: Cascading Reset Signals</catsoop-section>
+
+For a complete clock, you need coordinated resets:
+
+**Seconds:** 
+- Units and tens digits both reset at 60
+
+**Minutes:**
+- Units and tens digits both reset at 60
+- Only happens when seconds rolls over
+
+**Hours:**
+- Units and tens digits both reset at 12
+- Only happens when minutes rolls over
+
+This cascading behavior requires:
+1. Detecting the reset condition for each pair
+2. Resetting both digits simultaneously
+3. Not interfering with carry signals between pairs
+
+In the project, you'll implement this carefully to ensure smooth operation!
+
+<catsoop-section>Recap</catsoop-section>
+
+Congratulations! You've learned:
+
+✓ How the CD4026 reset pin works
+
+✓ Why we need automatic resets for clock applications
+
+✓ The diode reset method for detecting specific digits (especially 6)
+
+✓ How logic gates work (AND, OR, NOT, NAND)
+
+✓ The 74LS00 NAND gate IC and its pinout
+
+✓ How to detect multi-digit values with logic gates
+
+✓ Building an AND gate circuit with two buttons
+
+✓ Practical approaches for resetting at 60 and 12
+
+✓ Alternative methods using paper clips and push pins
+
+✓ How to test and troubleshoot reset circuits
+
+You now have all the knowledge needed to build the complete digital clock in the project!
+
+### Final Submission
+
+<question fileupload>
+csq_prompt = "Upload a short video (20 seconds) showing a reset circuit in action. This could be: (1) A diode reset circuit resetting a single digit at 6, OR (2) Your two-button AND gate circuit with LED, OR (3) Any counter with a reset mechanism you've built. Demonstrate the reset happening automatically or triggered by buttons."
+csq_nsubmits = None
+</question>
+
+---
+
+[In this module's project](COURSES/modules/mod2/project), you'll put together everything from Module 2 – debouncing, timing circuits, and reset methods – to build a complete compact digital clock that displays hours:minutes:seconds with accurate timing and proper resets at 60 and 12!
