@@ -1,11 +1,3 @@
-<python>
-print(f"<div style='background: yellow; padding: 10px;'>")
-print(f"<p>Auth type: {cs_auth_type}</p>")
-print(f"<p>Self-registration allowed: {globals().get('cs_allow_self_registration', 'NOT SET')}</p>")
-print(f"<p>Username: {cs_username}</p>")
-print(f"</div>")
-</python>
-
 ## Welcome!
 
 This course takes you on a journey from understanding basic digital circuits to building working electronic systems — all with your own hands, from the ground up. No theory-only lectures here.

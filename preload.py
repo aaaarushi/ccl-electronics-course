@@ -21,8 +21,7 @@ cs_top_menu = [
     {'text': 'Home', 'link': 'COURSE'},
     {'text': 'Modules', 'link': 'COURSE/modules'},
     {'text': 'Resources', 'link': 'COURSE/resources'},
-    {'text': 'TEST', 'link': 'COURSE/questions'},
-    {'text': 'Progress', 'link': 'COURSE/modules/progress'}
+    {'text': 'Progress', 'link': 'COURSE/progress'}
 #    {'text': 'Sample Menu', 'link': [
 #                                     {'link': 'COURSE/calendar', 'text': 'Calendar and Handouts'},
 #                                     {'link': 'COURSE/announcements', 'text': 'Archived Announcements'},
@@ -165,15 +164,3 @@ def cs_post_load(context):
         context['cs_footer'] = 'This page was last updated on %s (revision <code>%s</code>).<br/>&nbsp;<br/>' % (t, h.decode())
     except:
         pass
-
-# Debug authentication
-original_cs_post_load = cs_post_load if 'cs_post_load' in dir() else lambda c: None
-
-def cs_post_load(context):
-    original_cs_post_load(context)
-    
-    # Debug info
-    if 'loginaction' in context.get('cs_form', {}):
-        print(f"DEBUG: Login action = {context['cs_form']['loginaction']}")
-        print(f"DEBUG: Self-registration = {context.get('cs_allow_self_registration', False)}")
-        print(f"DEBUG: Auth type = {context.get('cs_auth_type', 'NONE')}")

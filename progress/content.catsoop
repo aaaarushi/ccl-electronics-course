@@ -1,0 +1,144 @@
+<python>
+import catsoop.cslog as cslog
+import os
+import re
+
+# Define all your exercises with their paths
+exercises = [
+    ('mod1/ex1', 'Exercise 1.1: LEDs and Basic Circuits'),
+    ('mod1/ex2', 'Exercise 1.2: Binary to Decimal'),
+    ('mod1/ex3', 'Exercise 1.3: Counters'),
+    ('mod1/project', 'Project 1: Cascading Decade Counter'),
+    ('mod2/ex1', 'Exercise 2.1: Debounce'),
+    ('mod2/ex2', 'Exercise 2.2: Timing Circuits'),
+    ('mod2/ex3', 'Exercise 2.3: Reset'),
+    ('mod2/project', 'Project 2: Compact Digital Clock'),
+]
+
+def count_questions_in_exercise(ex_path):
+    """Count total number of questions in an exercise by reading the file"""
+    # Build the file path
+    course_root = os.path.join(cs_data_root, 'courses', cs_course)
+    file_path = os.path.join(course_root, 'modules', *ex_path.split('/'), 'content.catsoop')
+    
+    if not os.path.exists(file_path):
+        return 0
+    
+    try:
+        with open(file_path, 'r') as f:
+            content = f.read()
+        
+        # Count <question> tags (but not </question>)
+        # This regex finds opening question tags
+        question_count = len(re.findall(r'<question\s+\w+>', content))
+        return question_count
+    except:
+        return 0
+
+def get_exercise_status(ex_path):
+    """Get the submission status for an exercise"""
+    # Build the full path to the exercise
+    path = [cs_course, 'modules'] + ex_path.split('/')
+    
+    # Get the most recent problemstate log
+    logs = cslog.most_recent(
+        cs_username,
+        path,
+        'problemstate',
+        {}
+    )
+    
+    if not logs:
+        return None
+    
+    # Extract scores - filter out internal variables that start with _
+    scores = logs.get('scores', {})
+    filtered_scores = {k: v for k, v in scores.items() if not k.startswith('_')}
+    
+    return filtered_scores
+
+def calculate_stats(scores, total_questions):
+    """Calculate correct/attempted/total questions"""
+    if scores is None:
+        attempted = 0
+        correct = 0
+    else:
+        attempted = len(scores)
+        correct = sum(1 for score in scores.values() if score >= 1.0)
+    
+    return correct, attempted, total_questions
+</python>
+
+<div style="max-width: 1000px; margin: 20px auto;">
+
+<p>Track your progress across all course modules and exercises.</p>
+
+<python>
+# Generate the progress table
+print('<table border="1" style="width: 100%; border-collapse: collapse; margin: 20px 0;">')
+print('<thead>')
+print('<tr style="background-color: #A31F34; color: white;">')
+print('<th style="padding: 12px; text-align: left;">Exercise</th>')
+print('<th style="padding: 12px; text-align: center;">Status</th>')
+print('<th style="padding: 12px; text-align: center;">Correct</th>')
+print('<th style="padding: 12px; text-align: center;">Attempted</th>')
+print('<th style="padding: 12px; text-align: center;">Total</th>')
+print('<th style="padding: 12px; text-align: center;">Score</th>')
+print('</tr>')
+print('</thead>')
+print('<tbody>')
+
+for ex_path, ex_name in exercises:
+    total_questions = count_questions_in_exercise(ex_path)
+    scores = get_exercise_status(ex_path)
+    correct, attempted, total = calculate_stats(scores, total_questions)
+    
+    # Determine status and styling
+    if total == 0:
+        status = '○ No Questions'
+        bg_color = '#f8f9fa'
+        correct_text = '0'
+        attempted_text = '0'
+        total_text = '0'
+        avg_score = '-'
+    elif scores is None or attempted == 0:
+        status = '○ Not Started'
+        bg_color = '#f8f9fa'
+        correct_text = '0'
+        attempted_text = '0'
+        total_text = str(total)
+        avg_score = '-'
+    else:
+        correct_text = str(correct)
+        attempted_text = str(attempted)
+        total_text = str(total)
+        
+        avg_score_num = sum(scores.values()) / len(scores)
+        avg_score = f'{avg_score_num * 100:.0f}%'
+        
+        if correct == total:
+            status = '✓ Complete'
+            bg_color = '#d4edda'
+        elif correct > 0:
+            status = '◐ In Progress'
+            bg_color = '#fff3cd'
+        else:
+            status = '◔ Started'
+            bg_color = '#f8d7da'
+    
+    # Print row
+    print(f'<tr style="background-color: {bg_color};">')
+    print(f'<td style="padding: 10px;"><a href="modules/{ex_path}" style="color: #0066cc; text-decoration: none;">{ex_name}</a></td>')
+    print(f'<td style="padding: 10px; text-align: center; font-weight: bold;">{status}</td>')
+    print(f'<td style="padding: 10px; text-align: center;">{correct_text}</td>')
+    print(f'<td style="padding: 10px; text-align: center;">{attempted_text}</td>')
+    print(f'<td style="padding: 10px; text-align: center;">{total_text}</td>')
+    print(f'<td style="padding: 10px; text-align: center; font-weight: bold;">{avg_score}</td>')
+    print('</tr>')
+
+print('</tbody>')
+print('</table>')
+</python>
+
+
+</div>
