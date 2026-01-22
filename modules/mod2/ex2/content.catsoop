@@ -1,5 +1,567 @@
-<catsoop-section>Crystal Clocks</catsoop-section>
+<style>
+.figure {
+  text-align: center;
+  margin: 1rem 0;
+}
 
-<catsoop-section>555 Timer</catsoop-section>
+.figure img {
+  max-width: 100%;
+  max-height: 500px;
+}
 
-<catsoop-section>Ticking Counter</catsoop-section>
+.figure figcaption {
+  font-style: italic;
+  color: #000;
+  font-size: 1rem; /* same as body text */
+  margin-top: 0.3rem;
+}
+</style>
+
+In Exercise 2.1, you learned how to debounce buttons to get clean, reliable button presses. But manually pressing a button to make your counter increment isn't very useful for a clock – you'd have to sit there pressing it once per second forever! 
+
+In this exercise, you'll learn how to make circuits that generate timing signals automatically. By the end, you'll have a counter that ticks by itself, just like a real digital clock!
+
+<div style="text-align: center;">
+  <h3>INSERT VIDEO OF COUNTER AUTOMATICALLY TICKING EVERY SECOND</h3>
+</div>
+
+<catsoop-section>What is a Clock Signal?</catsoop-section>
+
+In electronics, a **clock signal** is a repeating signal that oscillates between HIGH and LOW at regular intervals. It's what makes digital circuits tick in synchronization.
+
+<figure class="figure">
+  <img src="CURRENT/clock_signal.png">
+  <figcaption>Clock signal oscillating between HIGH (5V) and LOW (0V)</figcaption>
+</figure>
+
+Remember from Exercise 1.3 that your CD4026 counter increments every time its clock pin (pin 1) receives a rising edge – a transition from LOW to HIGH. 
+
+If we can create a signal that automatically goes LOW → HIGH → LOW → HIGH at regular intervals, our counter will increment automatically!
+
+The **frequency** of a clock signal is how many times it oscillates per second, measured in **Hertz (Hz)**:
+- 1 Hz = 1 cycle per second
+- 1 kHz = 1,000 cycles per second  
+- 1 MHz = 1,000,000 cycles per second
+
+For a clock that counts seconds, we need a 1 Hz signal – one rising edge per second.
+
+<question multiplechoice>
+csq_prompt = "If you want your counter to increment 10 times per second, what frequency clock signal do you need?"
+csq_options = ["1 Hz", "10 Hz", "100 Hz", "0.1 Hz"]
+csq_soln = "10 Hz"
+csq_explanation = "10 increments per second = 10 rising edges per second = 10 Hz. Each Hz is one complete cycle (LOW to HIGH to LOW) per second."
+</question>
+
+<catsoop-section>Crystal Oscillators</catsoop-section>
+
+One of the most accurate ways to generate a clock signal is with a **crystal oscillator**.
+
+### What is a Crystal Oscillator?
+
+<figure class="figure">
+  <img src="CURRENT/crystal_oscillator.jpg">
+  <figcaption>Crystal oscillator component</figcaption>
+</figure>
+
+A crystal oscillator uses a piece of quartz crystal that vibrates at a very precise frequency when voltage is applied to it. This is called the **piezoelectric effect** – certain crystals vibrate when electricity passes through them, and vice versa.
+
+Quartz crystals are incredibly stable and accurate, which is why they're used in:
+- Watches and clocks
+- Computer processors  
+- Radio transmitters
+- Any device that needs precise timing
+
+Common crystal frequencies:
+- **32.768 kHz** – Used in watches (divides down nicely to 1 Hz)
+- **4 MHz, 8 MHz, 16 MHz** – Used in microcontrollers
+- **27 MHz** – Used in older computer keyboards
+
+<question multiplechoice>
+csq_prompt = "Why might a 32.768 kHz crystal be useful for making a 1 Hz clock signal?"
+csq_options = [
+    "It's exactly 1 Hz",
+    "32,768 is a power of 2 (2^15), so it divides down to 1 Hz easily",
+    "It's the most accurate frequency",
+    "Crystals only come in this frequency"
+]
+csq_soln = "32,768 is a power of 2 (2^15), so it divides down to 1 Hz easily"
+csq_explanation = "32,768 = 2^15. If you divide by 2 fifteen times (using digital divider circuits), you get exactly 1 Hz. This makes it perfect for clocks: 32,768 Hz ÷ 2 ÷ 2 ÷ 2... (15 times) = 1 Hz."
+</question>
+
+### Crystal Oscillator Circuit
+
+While crystal oscillators are very accurate, they require additional circuitry to work:
+- Capacitors (usually two 22pF capacitors)
+- Sometimes an inverter IC to create the oscillation
+- Power supply connections
+
+<figure class="figure">
+  <img src="CURRENT/crystal_circuit.png">
+  <figcaption>Basic crystal oscillator circuit</figcaption>
+</figure>
+
+For our purposes, using a bare crystal would be complex. Instead, we'll use something simpler for learning: the **555 timer IC**.
+
+**Note:** In the final project for this module, you'll use a pre-built crystal oscillator module that includes all the necessary circuitry. These modules are much easier to use – you just connect power and get a clock signal out!
+
+<catsoop-section>The 555 Timer IC</catsoop-section>
+
+The **555 timer** is one of the most popular ICs ever made. It was introduced in 1972 and is still widely used today because it's versatile, cheap, and easy to use.
+
+<figure class="figure">
+  <img src="CURRENT/555_timer_ic.jpg">
+  <figcaption>555 Timer IC</figcaption>
+</figure>
+
+The 555 can operate in different modes, but we're interested in **astable mode**, which generates a continuous oscillating signal – perfect for a clock!
+
+### 555 Timer Pinout
+
+<figure class="figure">
+  <img src="CURRENT/555_pinout.png">
+  <figcaption>555 Timer IC pinout diagram</figcaption>
+</figure>
+
+**Pin connections:**
+- **Pin 1 (GND):** Connect to ground
+- **Pin 2 (Trigger):** For astable mode, connect to pin 6
+- **Pin 3 (Output):** Clock signal output – connect to your counter
+- **Pin 4 (Reset):** Connect to VCC (keeps timer running)
+- **Pin 5 (Control Voltage):** Connect to GND through 0.01µF capacitor (stabilizes timing)
+- **Pin 6 (Threshold):** For astable mode, connect to pin 2
+- **Pin 7 (Discharge):** Connects between resistors for timing
+- **Pin 8 (VCC):** Connect to 5V power
+
+Don't worry if this seems complicated – we'll build it step by step!
+
+<catsoop-section>How Astable Mode Works</catsoop-section>
+
+In astable mode, the 555 timer charges and discharges a capacitor through resistors, creating an oscillating output.
+
+<figure class="figure">
+  <img src="CURRENT/555_astable_diagram.png">
+  <figcaption>555 timer in astable mode</figcaption>
+</figure>
+
+**The cycle:**
+1. **Charging:** Capacitor charges through R1 and R2, voltage rises
+2. **Threshold reached:** When voltage reaches 2/3 of VCC, output goes LOW
+3. **Discharging:** Capacitor discharges through R2 only, voltage falls
+4. **Trigger reached:** When voltage reaches 1/3 of VCC, output goes HIGH
+5. **Repeat:** The cycle continues indefinitely
+
+The frequency depends on the resistor and capacitor values:
+
+**Frequency formula:**
+```
+f = 1.44 / ((R1 + 2×R2) × C)
+```
+
+Where:
+- f = frequency in Hz
+- R1, R2 = resistance in Ohms (Ω)
+- C = capacitance in Farads (F)
+
+**Period formula (time for one complete cycle):**
+```
+T = 0.693 × (R1 + 2×R2) × C
+```
+
+<question multiplechoice>
+csq_prompt = "If you want a slower oscillation (lower frequency), should you increase or decrease the capacitor value?"
+csq_options = [
+    "Increase the capacitor",
+    "Decrease the capacitor",
+    "It doesn't affect frequency",
+    "Only resistors affect frequency"
+]
+csq_soln = "Increase the capacitor"
+csq_explanation = "From the formula f = 1.44/((R1+2×R2)×C), we can see that frequency is inversely proportional to C. Larger C means smaller f (slower oscillation), smaller C means larger f (faster oscillation)."
+</question>
+
+<catsoop-section>Building Your First 555 Timer Clock</catsoop-section>
+
+Let's build a 555 timer circuit that blinks an LED, so you can see the oscillation in action!
+
+### Components You'll Need:
+- 1 × 555 timer IC
+- 1 × 10kΩ resistor (R1)
+- 1 × 100kΩ resistor (R2)  
+- 1 × 10µF electrolytic capacitor (C1)
+- 1 × 0.01µF capacitor (marked 103) (C2)
+- 1 × LED
+- 1 × 220Ω resistor (for LED)
+
+### Step-by-Step Assembly
+
+```
+1. With power OFF, place the 555 timer IC on your breadboard straddling the center gap. Look for the notch or dot marking pin 1.
+2. Connect power pins:
+   - Pin 1 (GND) → blue ground rail
+   - Pin 8 (VCC) → red power rail (5V)
+```
+
+**Note: As always with ICs, connect power (VCC and GND) first before anything else!**
+
+```
+3. Connect the timing components:
+   - Pin 7 (Discharge) to one end of R1 (10kΩ)
+   - Other end of R1 to VCC (pin 8)
+   - Pin 7 also connects to one end of R2 (100kΩ)
+   - Other end of R2 to pins 2 and 6 (connect these together)
+   - Pins 2 and 6 also connect to the positive leg of C1 (10µF)
+   - Negative leg of C1 to GND
+```
+
+<div style="text-align: center;">
+  <h3>INSERT PHOTO OF 555 TIMER TIMING COMPONENTS WIRED</h3>
+</div>
+
+```
+4. Connect control and reset pins:
+   - Pin 4 (Reset) → VCC (keeps timer enabled)
+   - Pin 5 (Control Voltage) → one leg of C2 (0.01µF capacitor)
+   - Other leg of C2 → GND
+```
+
+```
+5. Connect an LED to see the output:
+   - Pin 3 (Output) → 220Ω resistor → long leg of LED
+   - Short leg of LED → GND
+```
+
+<div style="text-align: center;">
+  <h3>INSERT PHOTO OF COMPLETE 555 TIMER LED BLINKER CIRCUIT</h3>
+</div>
+
+<div style="text-align: center;">
+  <h3>INSERT CIRCUIT DIAGRAM OF 555 ASTABLE MODE WITH LED</h3>
+</div>
+
+```
+6. Double-check all connections, especially:
+   - Capacitor polarities (positive legs to higher voltage)
+   - Pin 2 and pin 6 are connected together
+   - Pin 4 is connected to VCC (not GND)
+7. Turn power ON. Your LED should blink on and off repeatedly!
+```
+
+**If your LED doesn't blink:**
+- Check all power connections (pin 1 to GND, pin 8 to VCC)
+- Verify pin 4 is connected to VCC (if it's at GND, the timer is disabled)
+- Check capacitor polarities
+- Make sure pins 2 and 6 are connected together
+- Try a different 555 timer IC – they occasionally fail
+- Use your multimeter to check if pin 3 is oscillating between ~0V and ~5V
+
+<catsoop-section>Calculating the Blink Rate</catsoop-section>
+
+Let's calculate the frequency of your LED blinker:
+
+With R1 = 10kΩ, R2 = 100kΩ, C = 10µF:
+
+```
+f = 1.44 / ((R1 + 2×R2) × C)
+f = 1.44 / ((10,000 + 2×100,000) × 0.00001)
+f = 1.44 / (210,000 × 0.00001)
+f = 1.44 / 2.1
+f ≈ 0.69 Hz
+```
+
+This means about 0.69 cycles per second, or roughly one blink every 1.5 seconds.
+
+The period (time for one complete cycle) is:
+```
+T = 1/f = 1/0.69 ≈ 1.45 seconds
+```
+
+<question multiplechoice>
+csq_prompt = "If you replace the 10µF capacitor with a 100µF capacitor (keeping resistors the same), what happens to the blink rate?"
+csq_options = [
+    "Blinks 10× faster",
+    "Blinks 10× slower",
+    "No change",
+    "Blinks 2× slower"
+]
+csq_soln = "Blinks 10× slower"
+csq_explanation = "Frequency is inversely proportional to capacitance. If C increases by 10×, frequency decreases by 10× (and period increases by 10×). The LED will blink much more slowly."
+</question>
+
+<catsoop-section>Making a 1 Hz Clock Signal</catsoop-section>
+
+For a real clock, we need exactly 1 Hz – one pulse per second. Let's modify the circuit to achieve this.
+
+We need to choose R1, R2, and C such that:
+```
+f = 1.44 / ((R1 + 2×R2) × C) = 1 Hz
+```
+
+Solving for the resistor-capacitor combination:
+```
+(R1 + 2×R2) × C = 1.44
+```
+
+One good combination:
+- R1 = 1kΩ
+- R2 = 680kΩ  
+- C = 1µF
+
+Let's check:
+```
+f = 1.44 / ((1,000 + 2×680,000) × 0.000001)
+f = 1.44 / (1,361,000 × 0.000001)
+f = 1.44 / 1.361
+f ≈ 1.06 Hz
+```
+
+Close enough! (In practice, component tolerances mean you'll never get exactly 1.00 Hz anyway.)
+
+**However,** there's an even better approach: use a **potentiometer** to make the frequency adjustable!
+
+<catsoop-section>Using a Potentiometer for Adjustable Timing</catsoop-section>
+
+### What is a Potentiometer?
+
+<figure class="figure">
+  <img src="CURRENT/potentiometer.jpg">
+  <figcaption>Potentiometer (variable resistor)</figcaption>
+</figure>
+
+A **potentiometer** (or "pot" for short) is a variable resistor – you can adjust its resistance by turning a knob or screw.
+
+Potentiometers have three pins:
+- Two outer pins connect to the full resistance
+- Middle pin (wiper) can vary from 0Ω to full resistance
+
+Think of it like a volume knob on a radio – turning it changes the resistance, which changes the volume (or in our case, the timing).
+
+<figure class="figure">
+  <img src="CURRENT/potentiometer_diagram.png">
+  <figcaption>Potentiometer internal structure</figcaption>
+</figure>
+
+Common potentiometer values:
+- 1kΩ, 10kΩ, 100kΩ, 1MΩ (1,000kΩ)
+
+For our 555 timer clock, we'll use a **1MΩ potentiometer** in place of R2. This lets us adjust the frequency from very fast to about 1 Hz.
+
+### Building an Adjustable 555 Timer Clock
+
+```
+1. Modify your previous 555 timer circuit:
+   - Keep R1 = 10kΩ between VCC and pin 7
+   - Remove the fixed 100kΩ resistor (R2)
+   - Connect a 1MΩ potentiometer:
+     • One outer pin to pin 7 (Discharge)
+     • Middle pin (wiper) to pins 2 and 6
+     • Other outer pin can be left unconnected (or also connect to pins 2&6)
+   - Keep C1 = 10µF between pins 2&6 and GND
+   - Keep all other connections the same
+```
+
+<div style="text-align: center;">
+  <h3>INSERT PHOTO OF 555 TIMER WITH POTENTIOMETER</h3>
+</div>
+
+```
+2. Turn power ON and slowly adjust the potentiometer. You should see the LED blink rate change from very fast to very slow!
+3. Adjust it until the LED blinks approximately once per second (1 Hz).
+```
+
+This adjustable clock is perfect because component tolerances mean your calculated values might not give exactly 1 Hz – but with a potentiometer, you can tune it perfectly!
+
+<question multiplechoice>
+csq_prompt = "What advantage does a potentiometer give you over fixed resistors for timing circuits?"
+csq_options = [
+    "It's cheaper than regular resistors",
+    "It allows you to adjust and tune the exact frequency you need",
+    "It's more accurate than fixed resistors",
+    "It uses less power"
+]
+csq_soln = "It allows you to adjust and tune the exact frequency you need"
+csq_explanation = "Potentiometers let you fine-tune the frequency to compensate for component tolerances and get the exact timing you want. This is especially useful when you need a precise frequency like 1 Hz for a clock."
+</question>
+
+<catsoop-section>Connecting 555 Timer to Your Counter</catsoop-section>
+
+Now let's connect the 555 timer output to your cascading decade counter so it counts automatically!
+
+```
+1. Keep your 555 timer circuit with the potentiometer set to approximately 1 Hz.
+2. Remove the LED and its resistor from pin 3 (Output) of the 555 timer.
+3. Connect pin 3 (Output) of the 555 timer directly to pin 1 (Clock) of your first CD4026 counter IC.
+4. Make sure both circuits share the same power rails (same GND and VCC).
+```
+
+<div style="text-align: center;">
+  <h3>INSERT PHOTO OF 555 TIMER CONNECTED TO CASCADING COUNTER</h3>
+</div>
+
+```
+5. Turn power ON. Your counter should start incrementing automatically – once per second if you've tuned the potentiometer correctly!
+6. Fine-tune the potentiometer until the counter increments at exactly 1 second intervals. You can use a stopwatch or count along to verify timing.
+```
+
+Congratulations! You now have an automatic counting circuit that ticks like a real clock!
+
+**If your counter doesn't increment:**
+- Verify pin 3 of the 555 is connected to pin 1 of the CD4026
+- Check that both ICs are powered (VCC and GND connected)
+- Use your multimeter to verify pin 3 of the 555 is oscillating between ~0V and ~5V
+- Make sure you removed the debounce capacitor from the CD4026's clock pin (the 555 output is already clean)
+- Try adjusting the potentiometer – it might be set too fast or too slow to see changes
+
+<catsoop-section>Understanding Duty Cycle</catsoop-section>
+
+You might notice that the LED doesn't spend equal time ON and OFF. This is because of the **duty cycle** – the percentage of time the signal is HIGH versus LOW.
+
+<figure class="figure">
+  <img src="CURRENT/duty_cycle.png">
+  <figcaption>Different duty cycles</figcaption>
+</figure>
+
+In the 555 astable configuration we built:
+- **HIGH time:** t_high = 0.693 × (R1 + R2) × C
+- **LOW time:** t_low = 0.693 × R2 × C
+
+**Duty cycle:**
+```
+Duty cycle = t_high / (t_high + t_low) × 100%
+```
+
+Notice that t_high includes both R1 and R2, while t_low only includes R2. This means the output is HIGH longer than it's LOW (duty cycle > 50%).
+
+For our counter, this doesn't matter much – the CD4026 only cares about the rising edge (LOW to HIGH transition). But for some applications, you might want a 50% duty cycle (equal HIGH and LOW times).
+
+<question multiplechoice>
+csq_prompt = "To get closer to a 50% duty cycle, how should R1 compare to R2?"
+csq_options = [
+    "R1 should be much larger than R2",
+    "R1 should be much smaller than R2",
+    "R1 and R2 should be equal",
+    "Duty cycle doesn't depend on R1 and R2"
+]
+csq_soln = "R1 should be much smaller than R2"
+csq_explanation = "Since t_high = 0.693×(R1+R2)×C and t_low = 0.693×R2×C, if R1 << R2, then t_high ≈ t_low, giving roughly 50% duty cycle. In our circuit, R1 = 10kΩ and R2 can be up to 1MΩ, so the duty cycle is close to 50%."
+</question>
+
+<catsoop-section>Improving Accuracy with a Crystal Oscillator Module</catsoop-section>
+
+The 555 timer is great for learning and experimenting, but it's not very accurate for a real clock:
+- Temperature changes affect timing
+- Component tolerances cause drift
+- You might gain or lose several minutes per day
+
+For a real digital clock, you'd use a **crystal oscillator module** – a pre-built circuit with a crystal and all supporting components.
+
+<figure class="figure">
+  <img src="CURRENT/crystal_module.jpg">
+  <figcaption>Crystal oscillator module</figcaption>
+</figure>
+
+**Advantages of crystal modules:**
+- Very accurate (typically ±20 ppm = ±20 parts per million)
+- Stable across temperature changes
+- No adjustment needed – just connect power and use the output
+- Often include divider circuitry to give you 1 Hz directly
+
+**Common crystal module types:**
+- **32.768 kHz watch crystal modules** with built-in dividers → 1 Hz output
+- **1 Hz modules** that output 1 pulse per second directly
+
+Using a crystal module is simple:
+```
+1. Connect VCC → 5V
+2. Connect GND → ground  
+3. Connect OUT → your counter's clock pin
+```
+
+That's it! No tuning needed, and it'll keep accurate time for years.
+
+In this module's project, you'll use a crystal oscillator to build a truly accurate digital clock!
+
+<catsoop-section>Comparing Timing Methods</catsoop-section>
+
+Let's compare the timing methods we've learned:
+
+| Method | Accuracy | Adjustable | Complexity | Cost |
+|--------|----------|------------|------------|------|
+| Manual button | N/A | Fully manual | Very simple | Very cheap |
+| 555 timer | ±5-10% | Yes (with pot) | Moderate | Cheap |
+| Crystal oscillator | ±0.002% | No | Complex | Moderate |
+| Crystal module | ±0.002% | No | Very simple | Moderate |
+
+For learning and experimenting: **555 timer**
+For accurate timekeeping: **Crystal module**
+
+<catsoop-section>Challenge: Multi-Speed Counter</catsoop-section>
+
+For an extra challenge, modify your circuit to have multiple speed settings:
+
+**Method 1: Multiple fixed resistors with a switch**
+- Use a DIP switch to select different resistor values
+- Each combination gives a different frequency
+- Example: 1 Hz, 10 Hz, 100 Hz
+
+**Method 2: Multiple 555 timers**
+- Build separate 555 circuits for different frequencies  
+- Use a switch to select which one drives the counter
+- Allows completely independent timing for each mode
+
+**Method 3: Frequency divider**
+- Use a fast clock (like 10 Hz) and a divide-by-10 counter
+- Makes the output slower by factors of 10
+- More consistent than trying to tune resistors
+
+<catsoop-section>Real-World Applications</catsoop-section>
+
+The 555 timer you learned about is used everywhere:
+- **LED flashers** – Emergency lights, turn signals
+- **Tone generators** – Doorbells, alarms, musical instruments
+- **PWM controllers** – Motor speed control, LED dimming
+- **Timers** – Delay circuits, interval timers
+- **Oscillators** – Clock sources for digital circuits
+
+Crystal oscillators are used in:
+- **Watches and clocks** – Keep accurate time
+- **Computers** – Synchronize processor operations (GHz speeds!)
+- **Cell phones** – Timing for communication protocols
+- **GPS receivers** – Precise timing for position calculation
+- **Radio transmitters** – Generate exact carrier frequencies
+
+Understanding timing circuits is fundamental to electronics – you'll use these concepts in almost every digital project!
+
+<catsoop-section>Recap</catsoop-section>
+
+Congratulations! You've learned:
+
+✓ What clock signals are and why they're important
+
+✓ How crystal oscillators work and why they're accurate
+
+✓ The 555 timer IC and its astable mode operation
+
+✓ How to calculate frequency from R and C values
+
+✓ How to build a 555 timer oscillator circuit
+
+✓ What potentiometers are and how to use them for adjustable timing
+
+✓ How to connect a 555 timer to drive your counter automatically
+
+✓ The concept of duty cycle
+
+✓ Differences between 555 timers and crystal oscillators
+
+Your counter now ticks automatically – no more manual button pressing!
+
+### Final Submission
+
+<question fileupload>
+csq_prompt = "Upload a short video (20 seconds) showing your automatically ticking counter. Show the 555 timer circuit with potentiometer, and demonstrate adjusting the potentiometer to change the counting speed. Then set it to approximately 1 Hz (one count per second) and let it count for at least 10 seconds to show steady timing."
+csq_nsubmits = None
+</question>
+
+---
+
+[In the next exercise](COURSES/modules/mod2/ex3), you'll learn different methods for resetting counters at specific values – essential for making your clock reset at 60 seconds and 12 hours. You'll explore diode reset circuits and logic gate reset circuits to complete your clock-building toolkit!
