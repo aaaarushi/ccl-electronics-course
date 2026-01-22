@@ -87,7 +87,7 @@ If the loop is broken and there is an **open circuit**, electricity cannot flow.
 <question multiplechoice>
 csq_prompt = "With this setup, is there any current flowing through the breadboard?"
 csq_options = ["Yes", "No"]
-csq_soln = 2
+csq_soln = "No"
 csq_explanation = "The positive terminal is connected to the red rail, and the negative terminal is connected to the blue rail, but the two are not connected to each other. Therefore a closed loop is not formed, so even if we turn the power source on, there is no current flowing."
 </question>
 
@@ -123,7 +123,7 @@ By slowing down the flow of current, the resistor can protect other components, 
 <question multiplechoice>
 csq_prompt = "Using the resistor color code calculator, what is the size of this resistor?"
 csq_options = ["150 Ω", "4.1k Ω", "220 Ω", "1 Ω"]
-csq_soln = 3
+csq_soln = "220 Ω"
 </question>
 
 <figure class="figure">
@@ -160,7 +160,7 @@ csq_options = [
     "When the components are getting very hot",
     "Any time is fine"
 ]
-csq_soln = 2
+csq_soln = "Only after you double-check your wiring and are ready to test"
 csq_explanation = "Power should only be turned on after the wiring is complete and checked. Moving wires while power is on can cause short circuits or damage components. If components are getting hot, turn the power off immediately."
 </question>
 
@@ -172,7 +172,7 @@ csq_options = [
     "A switch",
     "A short circuit"
 ]
-csq_soln = 4
+csq_soln = "A short circuit"
 csq_explanation = "A short circuit allows large amounts of current to flow, which can damage components or the power source. The positive terminal should never be connected directly to GND."
 </question>
 
@@ -189,7 +189,7 @@ csq_options = [
     "Short leg",
     "Long leg"
 ]
-csq_soln = 2
+csq_soln = "Long leg"
 </question>
 
 <div style="text-align: center;">
@@ -235,7 +235,7 @@ csq_options = [
     "The brightness increases",
     "The brightness decreases"
 ]
-csq_soln = 2
+csq_soln = "The brightness decreases"
 csq_explanation = "As the resistance increases, the resistor limits the current flowing through the system. When the resistance is too high, there is not enough current flowing, so the light becomes dimmer."
 </question>
 
@@ -257,13 +257,13 @@ We can use a DIP switch to manually turn individual LEDs on or off.
 <question multiplechoice>
 csq_prompt = "When the DIP switch is ON, is the circuit open or closed?"
 csq_options = ["Open", "Closed"]
-csq_soln = 2
+csq_soln = "Closed"
 </question>
 
 <question multiplechoice>
 csq_prompt = "When the DIP switch is OFF, is the circuit open or closed?"
 csq_options = ["Open", "Closed"]
-csq_soln = 1
+csq_soln = "Open"
 </question>
 
 ### Jumper Wires
@@ -299,7 +299,7 @@ Let's make our new circuit!
 <question multiplechoice>
 csq_prompt = "Remember that current flow goes in the direction of power to GND, and must go in the long leg of the LED and out the short leg. Knowing this, what leg of the LED should be connected to GND?"
 csq_options = ["Short leg", "Long leg"]
-csq_soln = 1
+csq_soln = "Short leg"
 </question>
 ```
 6. Turn power ON! You should now be able to control which of your LED lights are on by turning each DIP switch ON or OFF.

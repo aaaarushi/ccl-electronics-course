@@ -80,7 +80,7 @@ Now that we know how to find the CD4026B chip's pinout, let's go through the con
 
 - **VSS:** This is a notation that pinout diagrams use for ground, which you are already familiar with. This pin should be connected to our GND rail.
 - **VDD:** This is a notation that pinout diagrams use for the positive terminal. Generally, you should check the datasheet to see what voltage the component is expecting. For this IC, our 5V is fine.
-- **Clock:** This is a common signal for many IC chips. Without a clock, how would the IC know how fast it should change to the next number? The counter increments every time the clock pin goes from LOW to HIGH. *Ignore this pin for now. We will come back to it later in the exercise.*
+- **Clock:** This is a common signal for many IC chips. Without a clock, how would the IC know how fast it should change to the next number? The counter increments every time the clock pin recieves a HIGH pulse, meaning our input signal goes from LOW to HIGH. *Ignore this pin for now. We will come back to it later in the exercise.*
 - **Clock inhibit:** If this pin is connected to 5V, it will freeze the current number on the screen and block the clock signal. *Ignore this pin.*
 - **Display enable in:** In order for anything to show up on our display, we must enable the display. We do this by connecting this pin to 5V. If this pin was connected to GND, our 7-segment would be empty, even though the chip may still be counting internally.
 - **Reset:** If this pin is connected to 5V, it will reset the counter to 0. *Ignore this pin for now. We will come back to it in this module's project.*
@@ -103,7 +103,7 @@ Let's begin by getting the 7-segment LED to display zero.
 
 **If your 7-segment LED does not light, or does not look like a zero:**
 - Check your power connections.
-- Check each of the IC connections.
+- Check each of the IC connections using the multimeter.
 - Check that you are connecting each A-G IC pin to the correct pins of the 7-segment LED.
 - Make sure you have a 220Ω resistor connected from the GND of the 7-segment LED to your ground rail.
 - If your circuit is still not working, try to mentally and physically walk through the circuit. 
@@ -116,7 +116,7 @@ Now, it's time to make our circuit count! Our first step is to understand how th
 <question multiplechoice>
 csq_prompt = "Using what you know from above about each of the individual pins, which pin controls when the display should increment?"
 csq_options = ["Display enable in", "Reset", "Carry out", "Clock"]
-csq_soln = 4
+csq_soln = "Clock"
 </question>
 
 ### Clock
@@ -128,7 +128,7 @@ We can think of the clock as a square wave, where the value alternates between H
 <question multiplechoice>
 csq_prompt = "Looking at the squarewave below, how many times should the counter increment?"
 csq_options = ["1", "2", "3", "4", "5"]
-csq_soln = 3
+csq_soln = "3"
 </question>
 
 <figure class="figure">
