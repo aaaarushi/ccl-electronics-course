@@ -88,7 +88,7 @@ Now that we know how to find the CD4026B chip's pinout, let's go through the con
 **Output Pins: These are pins that provide information from the IC chip which we can connect to other components. Not all of the output pins may be necessary for every project. We know that they are output pins by understanding the purpose of the chip (providing A-G segments) as well as looking for pins that end in "out".**
 
 - **A-G:** These pins correspond to the A-G segments of the 7-segment LED like we talked about in Exercise 1.2. Each individual pin will go HIGH (5V) whenever that segment should be on to display a specific number, and the pin will be LOW (0V) otherwise.
-- **Display enable out:** This pin copies the value that is at display enable in. This is often used when we have multiple 7-segment LEDs that we are using together, and we want their displays to toggle between on and off at the same time. *Ignore this pin.*
+- **Display enable out:** This pin copies the value that is at display enable in. This is often used when we have multiple 7-segment LEDs that we are using together, and we want their displays to toggle between on and off in a complex manner at the same time. *Ignore this pin.*
 - **Carry out**: This pin will go HIGH when the counter reaches 9, and will return to LOW when it rolls back to 0. This functionality can be used to tell another counter when it should increment. *Ignore this pin for now. We will come back to it in this module's project.*
 - **Ungated "C" segment out:** This pin will correspond to the C segment of the 7-segment LED, but it ignores whether the display is enabled or not. This functionality can be useful for more advanced circuits. *Ignore this pin.*
 
@@ -174,6 +174,7 @@ When the button is pressed, the two sets of pins become internally connected, al
 
 <question fileupload>
 csq_prompt = "Upload a short video (10 seconds) showing your circuit working. Make sure the 7-segment LED display is clearly visible and show it incrementing from 0-9 as you push the button."
+csq_nsubmits = None
 </question>
 
 

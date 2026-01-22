@@ -143,12 +143,12 @@ Water can conduct electricity and cause short circuits, damage parts, or create 
 **Do not connect your circuit directly to wall outlets or your home's power.**
 Wall outlets have very high voltage (230V in India) and are extremely dangerous. You should only use low-voltage power sources such as 5V or 3.3V from a power supply, your computer's USB port, or a microcontroller.
 
-Safety Tips:
-* Turn your power off before changing wires or moving components.
-* When power is on, keep your hands off of exposed metal components in the circuit.
-* Never force components into the breadboard. Bent or broken pins can cause mistakes.
-* If something feels hot, smells strange, or does not behave as expected, disconnect power immediately and check your wiring.
-* When in doubt, ask for help or double-check the circuit before turning power back on.
+**Safety Tips:**
+- Turn your power off before changing wires or moving components.
+- When power is on, keep your hands off of exposed metal components in the circuit.
+- Never force components into the breadboard. Bent or broken pins can cause mistakes.
+- If something feels hot, smells strange, or does not behave as expected, disconnect power immediately and check your wiring.
+- When in doubt, ask for help or double-check the circuit before turning power back on.
 
 Following these rules will help keep you safe and protect your components while you learn!
 
@@ -361,7 +361,8 @@ Make sure you keep this setup for Exercise 1.2!
 
 ### Final Submission
 <question fileupload>
-csq_prompt = "Upload a short video (30 seconds) showing your circuit working. Make sure the 7-segment LED display is clearly visible and show different segments turning on and off when you flip the DIP switches. Show us your favorite number on the 7-segment display!"
+csq_prompt = "Upload a short video (10 seconds) showing your circuit working. Make sure the 7-segment LED display is clearly visible and show different segments turning on and off when you flip the DIP switches. Show us your favorite number on the 7-segment display!"
+csq_nsubmits = None
 </question>
 
 
