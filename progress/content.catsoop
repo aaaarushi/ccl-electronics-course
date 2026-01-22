@@ -113,7 +113,7 @@ for ex_path, ex_name in exercises:
         attempted_text = str(attempted)
         total_text = str(total)
         
-        avg_score_num = sum(scores.values()) / len(scores)
+        avg_score_num = correct / total if total > 0 else 0
         avg_score = f'{avg_score_num * 100:.0f}%'
         
         if correct == total:
