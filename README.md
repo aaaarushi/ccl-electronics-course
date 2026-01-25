@@ -21,18 +21,20 @@ For CATSOOP official installation docs: https://catsoop.org/docs/installing
 
 3. `catsoop configure`
 
-> FOR WINDOWS
-    You might get an error "libc not found"
+> NOTE FOR WINDOWS:
 
-    Run `pip show catsoop`
+>    You might get an error "libc not found"
 
-    This shows which file path catsoop is installed in, should be something like this C:\Users\tejor\AppData\Local\Programs\Python\Python312\Lib\site-packages\catsoop
+>    Run `pip show catsoop`
 
-    Go to that path - you can use the file explorer, start from your C:// drive and go until the catsoop folder
+>    This shows which file path catsoop is installed in, should be something like this C:\Users\tejor\AppData\Local\Programs\Python\Python312\Lib\site-packages\catsoop
 
-    Now you will need to change some of the files in the catsoop library, see the above Windows installation document for reference
+>    Go to that path - you can use the file explorer, start from your C:// drive and go until the catsoop folder
+
+>    Now you will need to change some of the files in the catsoop library, see the above Windows installation document for reference
 
 4. Install git from the souce page: https://github.com/git-guides/install-git
+
     All defaults are fine
 
 TODO: explain how to use git and set up ssh keys so you can clone this repo with ssh, explain how to open up files in vscode
