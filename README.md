@@ -19,6 +19,7 @@ If the dependencies are not installed, you may use the following installation gu
 
 <details>
 <summary>Installing Prerequisites</summary>
+
 To install `python`:
 
 On Linux systems, install through your package manager, or [download and build from source](https://www.python.org/downloads/).
